@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Blood Donors · PU Blood Diary</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-logos">
+          <img src="/images/nsslogo.jpg" alt="NSS" class="header-logo-nss">
+          <img src="/images/pondilogo.png" alt="Pondicherry University" class="header-logo-pu">
+          <img src="/images/40yearslogo.jpg" alt="40 Years" class="header-logo-40">
+        </div>
+        <div class="brand-text ms-2">
+          <h1>PU Blood Diary</h1>
+          <span class="brand-tagline">An initiative by NSS Pondicherry University</span>
+        </div>
+      </a>
+
+      <button class="mobile-nav-toggle" aria-label="Toggle Menu"><i class="fas fa-bars"></i></button>
+
+      <ul class="nav-links">
+        <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/register" class="nav-link"><i class="fas fa-heart"></i> Register</a></li>
+        <li><a href="/update-donation" class="nav-link"><i class="fas fa-calendar-alt"></i> Update</a></li>
+        <li><a href="/search" class="nav-link active"><i class="fas fa-search"></i> Find Donor</a></li>
+        <li><a href="/admin/login" class="nav-link btn-admin-nav"><i class="fas fa-lock"></i> Admin</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ===== SEARCH SECTION ===== -->
+  <main class="main-content">
+    <div class="glass-card">
+      <div class="card-header">
+        <h1 class="card-title" style="color:var(--primary-red);">
+          <i class="fas fa-search-location me-2"></i> Find Blood Donors
+        </h1>
+        <p class="card-subtitle">Search voluntary blood donors registered at Pondicherry University</p>
+      </div>
+
+      <!-- Filter Controls -->
+      <form id="publicSearchForm" class="form-grid" style="margin-bottom:1.5rem;">
+        <div class="form-group">
+          <label class="form-label" for="filterBloodGroup">Blood Group</label>
+          <select id="filterBloodGroup" class="form-select">
+            <option value="">All Blood Groups</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="Bombay Blood Group (hh)">Bombay Blood Group (hh)</option>
+            <option value="Rh-null (Rare)">Rh-null (Rare)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="filterDept">Department</label>
+          <select id="filterDept" class="form-select">
+            <option value="">Loading departments...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="filterState">State / UT</label>
+          <select id="filterState" class="form-select">
+            <option value="">Loading states...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="filterKeyword">Search Keyword</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="filterKeyword" class="form-control" placeholder="Search name or department...">
+            <button type="submit" class="btn btn-soft-red" style="white-space:nowrap;">
+              <i class="fas fa-search"></i> Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div style="margin-bottom: 1rem; display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="font-size:1.15rem; font-weight:700;" id="searchCount">Matching Donors</h3>
+    </div>
+
+    <div id="searchResultsContainer">
+      <!-- Dynamically rendered search cards -->
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:0.75rem;">
+      <img src="/images/nsslogo.jpg" alt="NSS Logo" class="footer-logo-img" style="border-radius:50%;">
+      <img src="/images/pondilogo.png" alt="PU Logo" class="footer-logo-img">
+      <img src="/images/40yearslogo.jpg" alt="40 Years Logo" class="footer-logo-img" style="border-radius:4px;">
+    </div>
+    <div class="footer-brand"><i class="fas fa-droplet text-primary-red"></i> PU Blood Diary</div>
+    <div class="footer-tagline">An initiative by NSS Pondicherry University</div>
+    <div class="footer-copyright">
+      &copy; Pondicherry University. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/search.js"></script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login · PU Blood Diary</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="background: var(--bg-subtle);">
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-logos">
+          <img src="/images/nsslogo.jpg" alt="NSS" class="header-logo-nss">
+          <img src="/images/pondilogo.png" alt="Pondicherry University" class="header-logo-pu">
+          <img src="/images/40yearslogo.jpg" alt="40 Years" class="header-logo-40">
+        </div>
+        <div class="brand-text ms-2">
+          <h1>PU Blood Diary</h1>
+          <span class="brand-tagline">An initiative by NSS Pondicherry University</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/register" class="nav-link"><i class="fas fa-heart"></i> Register</a></li>
+        <li><a href="/update-donation" class="nav-link"><i class="fas fa-calendar-alt"></i> Update</a></li>
+        <li><a href="/admin/login" class="nav-link btn-admin-nav active"><i class="fas fa-lock"></i> Admin</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ===== LOGIN CARD ===== -->
+  <main class="main-content" style="display:flex; align-items:center; justify-content:center; min-height: calc(100vh - 180px);">
+    <div class="glass-card" style="max-width: 440px; width:100%; border-top: 5px solid var(--primary-red); padding:3rem 2.2rem;">
+      <div class="card-header" style="text-align:center; border-bottom:none; margin-bottom:1rem;">
+        <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:1rem;">
+          <img src="/images/nsslogo.jpg" alt="NSS Logo" style="height:40px; border-radius:50%;">
+          <img src="/images/pondilogo.png" alt="PU Logo" style="height:44px;">
+          <img src="/images/40yearslogo.jpg" alt="40 Years Logo" style="height:40px; border-radius:4px;">
+        </div>
+        <h1 class="card-title" style="font-size:1.6rem;">Administrator Login</h1>
+        <p class="card-subtitle">NSS Pondicherry University Portal</p>
+      </div>
+
+      <form id="adminLoginForm">
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label" for="adminUsername">Username <span class="required">*</span></label>
+          <input type="text" id="adminUsername" name="username" class="form-control" placeholder="Enter admin username" required style="border-radius:var(--radius-pill); padding:0.75rem 1.4rem;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label" for="adminPassword">Password <span class="required">*</span></label>
+          <input type="password" id="adminPassword" name="password" class="form-control" placeholder="Enter admin password" required style="border-radius:var(--radius-pill); padding:0.75rem 1.4rem;">
+        </div>
+
+        <button type="submit" class="btn btn-soft-red" style="width:100%; font-size:1.05rem; border-radius:var(--radius-pill); padding:0.8rem;">
+          <i class="fas fa-lock me-2"></i> Login to Dashboard
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:0.75rem;">
+      <img src="/images/nsslogo.jpg" alt="NSS Logo" class="footer-logo-img" style="border-radius:50%;">
+      <img src="/images/pondilogo.png" alt="PU Logo" class="footer-logo-img">
+      <img src="/images/40yearslogo.jpg" alt="40 Years Logo" class="footer-logo-img" style="border-radius:4px;">
+    </div>
+    <div class="footer-brand"><i class="fas fa-droplet text-primary-red"></i> PU Blood Diary</div>
+    <div class="footer-tagline">An initiative by NSS Pondicherry University</div>
+    <div class="footer-copyright">
+      &copy; Pondicherry University. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginForm = document.getElementById('adminLoginForm');
+      if (!loginForm) return;
+
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('adminUsername').value.trim();
+        const password = document.getElementById('adminPassword').value;
+
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+
+        try {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Authenticating...';
+
+          const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            showToast('Login successful! Redirecting...', 'success');
+            setTimeout(() => {
+              window.location.href = '/admin/dashboard';
+            }, 800);
+          } else {
+            showToast(data.message || 'Invalid credentials.', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('Network error during login.', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

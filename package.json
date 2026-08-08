@@ -1,0 +1,32 @@
+{
+  "name": "pu-blood-directory",
+  "version": "1.0.0",
+  "description": "PU Blood Diary - An initiative by NSS Pondicherry University",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node utils/seed.js"
+  },
+  "keywords": [
+    "blood-donor",
+    "pondicherry-university",
+    "nss",
+    "express",
+    "mysql",
+    "nodejs"
+  ],
+  "author": "Pondicherry University NSS",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.1",
+    "express-session": "^1.18.0",
+    "helmet": "^7.1.0",
+    "mysql2": "^3.10.1",
+    "sqlite3": "^5.1.7"
+  }
+}

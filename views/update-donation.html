@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Donation Record · PU Blood Diary</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-logos">
+          <img src="/images/nsslogo.jpg" alt="NSS" class="header-logo-nss">
+          <img src="/images/pondilogo.png" alt="Pondicherry University" class="header-logo-pu">
+          <img src="/images/40yearslogo.jpg" alt="40 Years" class="header-logo-40">
+        </div>
+        <div class="brand-text ms-2">
+          <h1>PU Blood Diary</h1>
+          <span class="brand-tagline">An initiative by NSS Pondicherry University</span>
+        </div>
+      </a>
+
+      <button class="mobile-nav-toggle" aria-label="Toggle Menu"><i class="fas fa-bars"></i></button>
+
+      <ul class="nav-links">
+        <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/register" class="nav-link"><i class="fas fa-heart"></i> Register</a></li>
+        <li><a href="/update-donation" class="nav-link active"><i class="fas fa-calendar-alt"></i> Update</a></li>
+        <li><a href="/search" class="nav-link"><i class="fas fa-search"></i> Find Donor</a></li>
+        <li><a href="/admin/login" class="nav-link btn-admin-nav"><i class="fas fa-lock"></i> Admin</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ===== MAIN UPDATE CONTENT ===== -->
+  <main class="main-content">
+    <div class="glass-card" style="max-width: 650px; margin: 0 auto;">
+      <div class="card-header">
+        <h1 class="card-title" style="color:var(--primary-red);">
+          <i class="fas fa-history me-2"></i> Update Donation Record
+        </h1>
+        <p class="card-subtitle">An initiative by NSS Pondicherry University</p>
+      </div>
+
+      <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1.5rem;">
+        Registered donors can search their profile below using their <strong>University Register Number</strong> or <strong>Registered Email</strong> to update their <strong>Last Blood Donated Date</strong>.
+      </p>
+
+      <!-- Step 1: Donor Lookup -->
+      <form id="donorLookupForm" style="margin-bottom: 2rem;">
+        <div class="form-group">
+          <label class="form-label" for="identifier">University Register Number OR Registered Email <span class="required">*</span></label>
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="identifier" name="identifier" class="form-control" placeholder="Enter Reg No or Email..." required>
+            <button type="submit" class="btn btn-soft-red" style="white-space:nowrap;">
+              <i class="fas fa-search"></i> Search
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Step 2: Verified Profile & Date Form -->
+      <div id="donorInfoCard" class="conditional-box" style="padding:1.5rem; background:white; border:1px solid var(--border-color); border-left:4px solid var(--primary-red);">
+        <h3 style="font-size:1.2rem; color:var(--text-dark); margin-bottom:1rem;"><i class="fas fa-check-circle text-primary-red me-2"></i> Verified Donor Profile</h3>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:1.5rem; font-size:0.95rem; background:var(--bg-subtle); padding:1.2rem; border-radius:12px;">
+          <p><strong>Name:</strong> <span id="dispName">-</span></p>
+          <p><strong>Blood Group:</strong> <span id="dispBloodGroup" class="badge-blood">-</span></p>
+          <p><strong>Department:</strong> <span id="dispDepartment">-</span></p>
+          <p><strong>Register No:</strong> <span id="dispRegNo">-</span></p>
+          <p style="grid-column: 1 / -1;"><strong>Current Last Donated Date:</strong> <span id="dispLastDonated">-</span></p>
+        </div>
+
+        <form id="donationUpdateForm">
+          <div class="form-group" style="margin-bottom:1.5rem;">
+            <label class="form-label" for="new_donation_date">New Last Blood Donated Date <span class="required">*</span></label>
+            <input type="date" id="new_donation_date" name="new_donation_date" class="form-control" required>
+            <span class="form-hint">Future dates are not allowed.</span>
+          </div>
+
+          <button type="submit" class="btn btn-soft-red" style="width:100%;">
+            <i class="fas fa-calendar-check"></i> Update Donation Date
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:0.75rem;">
+      <img src="/images/nsslogo.jpg" alt="NSS Logo" class="footer-logo-img" style="border-radius:50%;">
+      <img src="/images/pondilogo.png" alt="PU Logo" class="footer-logo-img">
+      <img src="/images/40yearslogo.jpg" alt="40 Years Logo" class="footer-logo-img" style="border-radius:4px;">
+    </div>
+    <div class="footer-brand"><i class="fas fa-droplet text-primary-red"></i> PU Blood Diary</div>
+    <div class="footer-tagline">An initiative by NSS Pondicherry University</div>
+    <div class="footer-copyright">
+      &copy; Pondicherry University. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/update-donation.js"></script>
+</body>
+</html>
