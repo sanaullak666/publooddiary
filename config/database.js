@@ -68,91 +68,78 @@ const db = {
 };
 
 async function initDatabase() {
-  let dbHost = process.env.DB_HOST || 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com';
-  let dbUser = process.env.DB_USER || 'vhWoeruys6ZvbgF.root';
-  let dbPassword = process.env.DB_PASSWORD || '8LMTB3ARZzdZBPkB';
-  let dbName = process.env.DB_NAME || 'test';
-  let dbPort = parseInt(process.env.DB_PORT || '4000', 10);
+  if (sqliteDb) return;
 
-  const databaseUrl = process.env.DATABASE_URL || process.env.MYSQL_URL || process.env.TIDB_URL;
-  if (databaseUrl) {
-    try {
-      const parsedUrl = new URL(databaseUrl);
-      if (parsedUrl.hostname) dbHost = parsedUrl.hostname;
-      if (parsedUrl.port) dbPort = parseInt(parsedUrl.port, 10);
-      if (parsedUrl.username) dbUser = decodeURIComponent(parsedUrl.username);
-      if (parsedUrl.password) dbPassword = decodeURIComponent(parsedUrl.password);
-      const dbPath = parsedUrl.pathname.replace(/^\//, '');
-      if (dbPath && dbPath !== 'sys') {
-        dbName = dbPath;
-      }
-    } catch (urlErr) {
-      console.warn(`[Database] Notice parsing DATABASE_URL: (${urlErr.message}). Using individual DB variables.`);
-    }
-  }
+  const isServerless = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+  const dbPath = isServerless ? path.join(os.tmpdir(), 'pu_blood.db') : path.join(dbDir, 'pu_blood.db');
 
-  if (dbName === 'sys') {
-    dbName = 'test';
-  }
-
-  const useSsl = process.env.DB_SSL === 'false' ? false : true;
-
-  const connectionOptions = {
-    host: dbHost,
-    port: dbPort,
-    user: dbUser,
-    password: dbPassword,
-    connectTimeout: 7000,
-    ...(useSsl ? { ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' } } : {})
-  };
-
-  try {
-    try {
-      const tempConn = await mysql.createConnection(connectionOptions);
-      await tempConn.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`);
-      await tempConn.end();
-    } catch (createErr) {
-      console.warn(`[Database] Database creation check notice: (${createErr.message}).`);
-    }
-
-    pool = mysql.createPool({
-      ...connectionOptions,
-      database: dbName,
-      waitForConnections: true,
-      connectionLimit: 5,
-      maxIdle: 0,
-      idleTimeout: 1000,
-      enableKeepAlive: false,
-      queueLimit: 0
+  dbType = 'sqlite';
+  await new Promise((resolve, reject) => {
+    sqliteDb = new sqlite3.Database(dbPath, (err) => {
+      if (err) reject(err);
+      else resolve();
     });
+  });
 
-    await pool.query('SELECT 1');
-    dbType = 'mysql';
-    console.log(`[Database] Connected successfully to MySQL/TiDB database '${dbName}' on ${dbHost}:${dbPort}`);
+  console.log(`[Database] Fast Local Database initialized at: ${dbPath}`);
+  await setupTablesSQLite();
 
-    await setupTablesMySQL();
-  } catch (err) {
-    console.error(`[Database] MySQL/TiDB connection failed (${err.message}).`);
-    console.warn(`[Database] Falling back to local SQLite database.`);
-    dbType = 'sqlite';
-    
-    const isServerless = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
-    const dbPath = isServerless ? path.join(os.tmpdir(), 'pu_blood.db') : path.join(dbDir, 'pu_blood.db');
-    
-    if (!sqliteDb) {
-      await new Promise((resolve, reject) => {
-        sqliteDb = new sqlite3.Database(dbPath, (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
+  // Attempt optional remote MySQL / TiDB connection only if explicitly requested via USE_REMOTE_DB
+  if (process.env.USE_REMOTE_DB === 'true') {
+    let dbHost = process.env.DB_HOST || 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com';
+    let dbUser = process.env.DB_USER || 'vhWoeruys6ZvbgF.root';
+    let dbPassword = process.env.DB_PASSWORD || '8LMTB3ARZzdZBPkB';
+    let dbName = process.env.DB_NAME || 'test';
+    let dbPort = parseInt(process.env.DB_PORT || '4000', 10);
+
+    const databaseUrl = process.env.DATABASE_URL || process.env.MYSQL_URL || process.env.TIDB_URL;
+    if (databaseUrl) {
+      try {
+        const parsedUrl = new URL(databaseUrl);
+        if (parsedUrl.hostname) dbHost = parsedUrl.hostname;
+        if (parsedUrl.port) dbPort = parseInt(parsedUrl.port, 10);
+        if (parsedUrl.username) dbUser = decodeURIComponent(parsedUrl.username);
+        if (parsedUrl.password) dbPassword = decodeURIComponent(parsedUrl.password);
+        const dbPath = parsedUrl.pathname.replace(/^\//, '');
+        if (dbPath && dbPath !== 'sys') dbName = dbPath;
+      } catch (e) {}
     }
+    if (dbName === 'sys') dbName = 'test';
 
-    console.log(`[Database] SQLite database initialized at: ${dbPath}`);
-    await setupTablesSQLite();
+    const useSsl = process.env.DB_SSL === 'false' ? false : true;
+    const connectionOptions = {
+      host: dbHost,
+      port: dbPort,
+      user: dbUser,
+      password: dbPassword,
+      connectTimeout: 5000,
+      ...(useSsl ? { ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' } } : {})
+    };
+
+    try {
+      pool = mysql.createPool({
+        ...connectionOptions,
+        database: dbName,
+        waitForConnections: true,
+        connectionLimit: 5,
+        maxIdle: 0,
+        idleTimeout: 1000,
+        enableKeepAlive: false,
+        queueLimit: 0
+      });
+
+      await pool.query('SELECT 1');
+      dbType = 'mysql';
+      console.log(`[Database] Remote MySQL/TiDB database connected '${dbName}' on ${dbHost}:${dbPort}`);
+      await setupTablesMySQL();
+    } catch (mysqlErr) {
+      console.warn(`[Database] Remote MySQL notice (${mysqlErr.message}). Continuing with local database.`);
+      dbType = 'sqlite';
+    }
   }
 
   await seedDefaultAdmin();
+  await seedInitialDonors();
 }
 
 async function setupTablesMySQL() {
@@ -333,6 +320,80 @@ async function seedDefaultAdmin() {
     }
   } catch (e) {
     console.error('[Database] Failed to seed default admin:', e);
+  }
+}
+
+async function seedInitialDonors() {
+  try {
+    const [rows] = await db.query('SELECT COUNT(*) as total FROM donors');
+    const total = rows[0].total || rows[0]['COUNT(*)'] || 0;
+    if (total === 0) {
+      const sampleDonors = [
+        {
+          name: 'Sanaulla K',
+          blood_group: 'O+',
+          last_donated_date: '2026-05-15',
+          department: 'Department of Computer Science',
+          register_number: '25MCA00PY0085',
+          contact_number: '9876543210',
+          alt_contact_number: '9876543211',
+          email: 'sanaulla@pondiuni.edu.in',
+          state_ut: 'Puducherry',
+          languages: JSON.stringify(['Tamil', 'English', 'Hindi']),
+          has_health_problem: 0,
+          has_regular_medicine: 0,
+          consumes_alcohol_substance: 0
+        },
+        {
+          name: 'Arun Kumar',
+          blood_group: 'A+',
+          last_donated_date: '2026-04-10',
+          department: 'Department of Electronics Engineering',
+          register_number: '25MTECH00PY012',
+          contact_number: '9123456789',
+          alt_contact_number: null,
+          email: 'arun.k@pondiuni.edu.in',
+          state_ut: 'Tamil Nadu',
+          languages: JSON.stringify(['Tamil', 'English']),
+          has_health_problem: 0,
+          has_regular_medicine: 0,
+          consumes_alcohol_substance: 0
+        },
+        {
+          name: 'Priya Sharma',
+          blood_group: 'B+',
+          last_donated_date: '2026-02-20',
+          department: 'Department of Management Studies',
+          register_number: '25MBA00PY0044',
+          contact_number: '9988776655',
+          alt_contact_number: null,
+          email: 'priya.s@pondiuni.edu.in',
+          state_ut: 'Delhi (NCT)',
+          languages: JSON.stringify(['Hindi', 'English']),
+          has_health_problem: 0,
+          has_regular_medicine: 0,
+          consumes_alcohol_substance: 0
+        }
+      ];
+
+      for (const d of sampleDonors) {
+        await db.query(
+          `INSERT INTO donors (
+            name, blood_group, last_donated_date, department, register_number,
+            contact_number, alt_contact_number, email, state_ut, languages,
+            has_health_problem, has_regular_medicine, consumes_alcohol_substance, declaration_agreed
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+          [
+            d.name, d.blood_group, d.last_donated_date, d.department, d.register_number,
+            d.contact_number, d.alt_contact_number, d.email, d.state_ut, d.languages,
+            d.has_health_problem, d.has_regular_medicine, d.consumes_alcohol_substance
+          ]
+        );
+      }
+      console.log('[Database] Initial voluntary donors seeded successfully.');
+    }
+  } catch (e) {
+    console.error('[Database] Failed to seed initial donors:', e);
   }
 }
 
