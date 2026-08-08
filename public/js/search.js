@@ -58,28 +58,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     try {
-      resultsContainer.innerHTML = '<div style="text-align:center; padding:3rem;"><p>Loading matching donors...</p></div>';
+      resultsContainer.innerHTML = '<div style="text-align:center; padding:3rem; color:var(--text-muted);"><i class="fas fa-spinner fa-spin fa-2x mb-3 text-primary-red"></i><p style="margin-top:10px;">Searching voluntary blood donors...</p></div>';
 
       const res = await fetch(`/api/donors/search?${queryParams.toString()}`);
       const data = await res.json();
 
       if (res.ok && data.success) {
-        renderResults(data.donors);
+        renderResults(data.donors || []);
       } else {
         resultsContainer.innerHTML = `<div class="card" style="text-align:center;"><p>${data.message || 'Error loading search results.'}</p></div>`;
       }
     } catch (err) {
       console.error('Search Fetch Error:', err);
-      resultsContainer.innerHTML = '<div class="card" style="text-align:center; color:var(--primary-red);"><p>Error connecting to server.</p></div>';
+      resultsContainer.innerHTML = '<div class="card" style="text-align:center; color:var(--primary-red);"><p>Error connecting to server. Please try again.</p></div>';
     }
   }
 
   function renderResults(donors) {
+    const list = Array.isArray(donors) ? donors : [];
     if (searchCountEl) {
-      searchCountEl.textContent = `Found ${donors.length} matching blood donor${donors.length === 1 ? '' : 's'}`;
+      searchCountEl.textContent = `Found ${list.length} matching blood donor${list.length === 1 ? '' : 's'}`;
     }
 
-    if (donors.length === 0) {
+    if (list.length === 0) {
       resultsContainer.innerHTML = `
         <div class="card" style="text-align:center; padding:3rem;">
           <div style="font-size:2.5rem; color:var(--text-muted); margin-bottom:1rem;">🩸</div>
