@@ -43,6 +43,7 @@ app.use(statelessSessionMiddleware);
 
 // Serve static assets from public/
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(process.cwd(), 'public')));
 
 // Global API rate limit
 app.use('/api/', apiLimiter);
@@ -59,7 +60,12 @@ app.use((req, res) => {
   if (req.xhr || req.headers.accept?.includes('json') || req.path.startsWith('/api/')) {
     return res.status(404).json({ success: false, message: 'API Endpoint Not Found' });
   }
-  res.status(404).sendFile(path.join(__dirname, 'views', 'index.html'));
+  const indexPath = path.join(__dirname, 'views', 'index.html');
+  const altIndexPath = path.join(process.cwd(), 'views', 'index.html');
+  if (require('fs').existsSync(indexPath)) {
+    return res.status(404).sendFile(indexPath);
+  }
+  return res.status(404).sendFile(altIndexPath);
 });
 
 // Centralized Error Handling Middleware

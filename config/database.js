@@ -5,6 +5,7 @@ const fs = require('fs');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
+const os = require('os');
 let dbType = 'mysql';
 let pool = null;
 let sqliteDb = null;
@@ -82,7 +83,7 @@ async function initDatabase() {
     port: dbPort,
     user: dbUser,
     password: dbPassword,
-    connectTimeout: 15000,
+    connectTimeout: 7000,
     ...(useSsl ? { ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' } } : {})
   };
 
@@ -99,7 +100,10 @@ async function initDatabase() {
       ...connectionOptions,
       database: dbName,
       waitForConnections: true,
-      connectionLimit: 10,
+      connectionLimit: 5,
+      maxIdle: 0,
+      idleTimeout: 1000,
+      enableKeepAlive: false,
       queueLimit: 0
     });
 
@@ -110,23 +114,20 @@ async function initDatabase() {
     await setupTablesMySQL();
   } catch (err) {
     console.error(`[Database] MySQL/TiDB connection failed (${err.message}).`);
-    
-    // On Vercel / serverless environments, file system is read-only, so SQLite fallback will fail.
-    if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
-      console.error(`[Database] Running on Vercel/Serverless environment. SQLite fallback disabled.`);
-      throw err;
-    }
-
     console.warn(`[Database] Falling back to local SQLite database.`);
     dbType = 'sqlite';
-    const dbPath = path.join(dbDir, 'pu_blood.db');
     
-    await new Promise((resolve, reject) => {
-      sqliteDb = new sqlite3.Database(dbPath, (err) => {
-        if (err) reject(err);
-        else resolve();
+    const isServerless = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+    const dbPath = isServerless ? path.join(os.tmpdir(), 'pu_blood.db') : path.join(dbDir, 'pu_blood.db');
+    
+    if (!sqliteDb) {
+      await new Promise((resolve, reject) => {
+        sqliteDb = new sqlite3.Database(dbPath, (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
       });
-    });
+    }
 
     console.log(`[Database] SQLite database initialized at: ${dbPath}`);
     await setupTablesSQLite();
