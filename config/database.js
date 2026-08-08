@@ -216,10 +216,18 @@ async function setupTablesMySQL() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
   `;
 
+  const createSettings = `
+    CREATE TABLE IF NOT EXISTS \`system_settings\` (
+      \`setting_key\` VARCHAR(50) PRIMARY KEY,
+      \`setting_value\` VARCHAR(255) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `;
+
   await pool.query(createAdmins);
   await pool.query(createDonors);
   await pool.query(createLogs);
   await pool.query(createPendingUpdates);
+  await pool.query(createSettings);
 
   try {
     await pool.query("ALTER TABLE `donors` ADD COLUMN `user_type` VARCHAR(20) NOT NULL DEFAULT 'student'");
@@ -293,10 +301,18 @@ async function setupTablesSQLite() {
     );
   `;
 
+  const createSettings = `
+    CREATE TABLE IF NOT EXISTS system_settings (
+      setting_key TEXT PRIMARY KEY,
+      setting_value TEXT NOT NULL
+    );
+  `;
+
   await db.query(createAdmins);
   await db.query(createDonors);
   await db.query(createLogs);
   await db.query(createPendingUpdates);
+  await db.query(createSettings);
 
   try {
     await db.query("ALTER TABLE donors ADD COLUMN user_type TEXT DEFAULT 'student'");
@@ -325,6 +341,13 @@ async function seedDefaultAdmin() {
 
 async function seedInitialDonors() {
   try {
+    // Check if initial seeding was already completed
+    const [settings] = await db.query('SELECT * FROM system_settings WHERE setting_key = ?', ['donors_seeded']);
+    if (settings && settings.length > 0) {
+      // Seeding has already been completed; respect admin deletions
+      return;
+    }
+
     const [rows] = await db.query('SELECT COUNT(*) as total FROM donors');
     const total = rows[0].total || rows[0]['COUNT(*)'] || 0;
     if (total === 0) {
@@ -391,6 +414,13 @@ async function seedInitialDonors() {
         );
       }
       console.log('[Database] Initial voluntary donors seeded successfully.');
+    }
+
+    // Mark seeding as completed so deleted records are never re-created
+    try {
+      await db.query('INSERT INTO system_settings (setting_key, setting_value) VALUES (?, ?)', ['donors_seeded', '1']);
+    } catch (err) {
+      // Key already exists
     }
   } catch (e) {
     console.error('[Database] Failed to seed initial donors:', e);
