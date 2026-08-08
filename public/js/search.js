@@ -7,11 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultsContainer = document.getElementById('searchResultsContainer');
   const searchCountEl = document.getElementById('searchCount');
 
+  const depts = window.PU_DEPARTMENTS || (typeof PU_DEPARTMENTS !== 'undefined' ? PU_DEPARTMENTS : []);
+  const states = window.INDIAN_STATES_UTS || (typeof INDIAN_STATES_UTS !== 'undefined' ? INDIAN_STATES_UTS : []);
+
   // Populate Dropdowns
   const deptSelect = document.getElementById('filterDept');
   if (deptSelect) {
     deptSelect.innerHTML = '<option value="">All Departments</option>';
-    PU_DEPARTMENTS.forEach(dept => {
+    depts.forEach(dept => {
       const cleanDept = dept.replace(/^\d+\.\s*/, '');
       const opt = document.createElement('option');
       opt.value = cleanDept;
@@ -23,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const stateSelect = document.getElementById('filterState');
   if (stateSelect) {
     stateSelect.innerHTML = '<option value="">All States / UTs</option>';
-    INDIAN_STATES_UTS.forEach(state => {
+    states.forEach(state => {
       const opt = document.createElement('option');
       opt.value = state;
       opt.textContent = state;

@@ -6,11 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const regForm = document.getElementById('donorRegistrationForm');
   if (!regForm) return;
 
+  const depts = window.PU_DEPARTMENTS || (typeof PU_DEPARTMENTS !== 'undefined' ? PU_DEPARTMENTS : []);
+  const states = window.INDIAN_STATES_UTS || (typeof INDIAN_STATES_UTS !== 'undefined' ? INDIAN_STATES_UTS : []);
+  const langs = window.CONSTITUTIONAL_LANGUAGES || (typeof CONSTITUTIONAL_LANGUAGES !== 'undefined' ? CONSTITUTIONAL_LANGUAGES : []);
+
   // 1. Populate Departments
   const deptSelect = document.getElementById('department');
   if (deptSelect) {
     deptSelect.innerHTML = '<option value="">-- Select Department / Programme --</option>';
-    PU_DEPARTMENTS.forEach(dept => {
+    depts.forEach(dept => {
       const cleanDept = dept.replace(/^\d+\.\s*/, '');
       const opt = document.createElement('option');
       opt.value = cleanDept;
@@ -23,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const stateSelect = document.getElementById('state_ut');
   if (stateSelect) {
     stateSelect.innerHTML = '<option value="">-- Select State / Union Territory --</option>';
-    INDIAN_STATES_UTS.forEach(state => {
+    states.forEach(state => {
       const opt = document.createElement('option');
       opt.value = state;
       opt.textContent = state;
@@ -35,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const langContainer = document.getElementById('languagesContainer');
   if (langContainer) {
     langContainer.innerHTML = '';
-    CONSTITUTIONAL_LANGUAGES.forEach(lang => {
+    langs.forEach(lang => {
       const label = document.createElement('label');
       label.className = 'checkbox-label';
       label.innerHTML = `

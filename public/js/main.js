@@ -99,6 +99,11 @@ const CONSTITUTIONAL_LANGUAGES = [
   "Urdu", "Other"
 ];
 
+// Attach registries to window object for global availability
+window.PU_DEPARTMENTS = PU_DEPARTMENTS;
+window.INDIAN_STATES_UTS = INDIAN_STATES_UTS;
+window.CONSTITUTIONAL_LANGUAGES = CONSTITUTIONAL_LANGUAGES;
+
 // Mobile Menu Toggle
 document.addEventListener('DOMContentLoaded', () => {
   const toggleBtn = document.querySelector('.mobile-nav-toggle');

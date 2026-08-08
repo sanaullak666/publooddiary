@@ -158,11 +158,21 @@ function openAddDonorModal() {
   switchAdminTab('addDonor');
 }
 
+function getDepts() {
+  return window.PU_DEPARTMENTS || (typeof PU_DEPARTMENTS !== 'undefined' ? PU_DEPARTMENTS : []);
+}
+function getStates() {
+  return window.INDIAN_STATES_UTS || (typeof INDIAN_STATES_UTS !== 'undefined' ? INDIAN_STATES_UTS : []);
+}
+function getLangs() {
+  return window.CONSTITUTIONAL_LANGUAGES || (typeof CONSTITUTIONAL_LANGUAGES !== 'undefined' ? CONSTITUTIONAL_LANGUAGES : []);
+}
+
 function populateTabAddDonorDropdowns() {
   const tabDept = document.getElementById('tabAddDept');
   if (tabDept) {
     tabDept.innerHTML = '<option value="">-- Select Department --</option>';
-    PU_DEPARTMENTS.forEach(dept => {
+    getDepts().forEach(dept => {
       const cleanDept = dept.replace(/^\d+\.\s*/, '');
       const opt = document.createElement('option');
       opt.value = cleanDept;
@@ -174,7 +184,7 @@ function populateTabAddDonorDropdowns() {
   const tabState = document.getElementById('tabAddState');
   if (tabState) {
     tabState.innerHTML = '<option value="">-- Select State / UT --</option>';
-    INDIAN_STATES_UTS.forEach(state => {
+    getStates().forEach(state => {
       const opt = document.createElement('option');
       opt.value = state;
       opt.textContent = state;
@@ -185,7 +195,7 @@ function populateTabAddDonorDropdowns() {
   const langContainer = document.getElementById('tabAddLanguagesContainer');
   if (langContainer) {
     langContainer.innerHTML = '';
-    CONSTITUTIONAL_LANGUAGES.forEach(lang => {
+    getLangs().forEach(lang => {
       const label = document.createElement('label');
       label.className = 'checkbox-label';
       label.style.fontSize = '0.85rem';
@@ -306,18 +316,23 @@ async function handleTabAddDonorSubmit(e) {
 async function checkAdminSession() {
   try {
     const res = await fetch('/api/admin/session');
+    if (res.status === 401) {
+      window.location.href = '/admin/login';
+      return;
+    }
     const data = await res.json();
     if (!data.authenticated) {
       window.location.href = '/admin/login';
     } else {
       const nameEl = document.getElementById('adminNameDisplay');
       if (nameEl) {
-        const displayName = (data.admin.name && data.admin.name !== 'NSS Administrator') ? data.admin.name : 'Admin';
+        const displayName = (data.admin && data.admin.name && data.admin.name !== 'NSS Administrator') ? data.admin.name : 'Admin';
         nameEl.textContent = displayName;
       }
     }
   } catch (err) {
     console.error('Session check failed:', err);
+    window.location.href = '/admin/login';
   }
 }
 
@@ -325,7 +340,7 @@ function populateAdminFilterDropdowns() {
   const deptSelect = document.getElementById('adminFilterDept');
   if (deptSelect) {
     deptSelect.innerHTML = '<option value="">All Departments</option>';
-    PU_DEPARTMENTS.forEach(dept => {
+    getDepts().forEach(dept => {
       const cleanDept = dept.replace(/^\d+\.\s*/, '');
       const opt = document.createElement('option');
       opt.value = cleanDept;
@@ -337,7 +352,7 @@ function populateAdminFilterDropdowns() {
   const stateSelect = document.getElementById('adminFilterState');
   if (stateSelect) {
     stateSelect.innerHTML = '<option value="">All States / UTs</option>';
-    INDIAN_STATES_UTS.forEach(state => {
+    getStates().forEach(state => {
       const opt = document.createElement('option');
       opt.value = state;
       opt.textContent = state;
@@ -350,7 +365,7 @@ function populateInlineAddDonorDropdowns() {
   const inlineDept = document.getElementById('inlineAddDept');
   if (inlineDept) {
     inlineDept.innerHTML = '<option value="">-- Select Department --</option>';
-    PU_DEPARTMENTS.forEach(dept => {
+    getDepts().forEach(dept => {
       const cleanDept = dept.replace(/^\d+\.\s*/, '');
       const opt = document.createElement('option');
       opt.value = cleanDept;
@@ -362,7 +377,7 @@ function populateInlineAddDonorDropdowns() {
   const inlineState = document.getElementById('inlineAddState');
   if (inlineState) {
     inlineState.innerHTML = '<option value="">-- Select State / UT --</option>';
-    INDIAN_STATES_UTS.forEach(state => {
+    getStates().forEach(state => {
       const opt = document.createElement('option');
       opt.value = state;
       opt.textContent = state;
@@ -373,7 +388,7 @@ function populateInlineAddDonorDropdowns() {
   const langContainer = document.getElementById('inlineAddLanguagesContainer');
   if (langContainer) {
     langContainer.innerHTML = '';
-    CONSTITUTIONAL_LANGUAGES.forEach(lang => {
+    getLangs().forEach(lang => {
       const label = document.createElement('label');
       label.className = 'checkbox-label';
       label.style.fontSize = '0.85rem';
@@ -433,17 +448,21 @@ async function loadDonors(page = 1) {
 
   try {
     const res = await fetch(`/api/admin/donors?${params.toString()}`);
+    if (res.status === 401) {
+      window.location.href = '/admin/login';
+      return;
+    }
     const data = await res.json();
 
     if (res.ok && data.success) {
-      renderDonorsTable(data.donors);
-      renderPagination(data.page, data.totalPages, data.totalCount);
+      renderDonorsTable(data.donors || []);
+      renderPagination(data.page || 1, data.totalPages || 1, data.totalCount || 0);
     } else {
       tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--primary-red); padding:2rem;">${data.message || 'Failed to load donors.'}</td></tr>`;
     }
   } catch (err) {
     console.error('Error loading donors:', err);
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:var(--primary-red); padding:2rem;">Network error loading records.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:var(--primary-red); padding:2rem;">Network error loading records. Please refresh the page.</td></tr>';
   }
 }
 
