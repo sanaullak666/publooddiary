@@ -434,6 +434,7 @@ async function loadDonors(page = 1) {
   const params = new URLSearchParams({
     page: page,
     limit: 10,
+    _t: Date.now(),
     search: document.getElementById('adminSearchInput')?.value.trim() || '',
     blood_group: document.getElementById('adminFilterBloodGroup')?.value || '',
     department: document.getElementById('adminFilterDept')?.value || '',

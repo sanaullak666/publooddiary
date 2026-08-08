@@ -45,6 +45,15 @@ app.use(statelessSessionMiddleware);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(process.cwd(), 'public')));
 
+// Disable Caching for all API Endpoints to ensure real-time data freshness
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+  next();
+});
+
 // Global API rate limit
 app.use('/api/', apiLimiter);
 
