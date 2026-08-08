@@ -1,5 +1,4 @@
 const express = require('express');
-const session = require('express-session');
 const helmet = require('helmet');
 const cors = require('cors');
 const path = require('path');
@@ -9,6 +8,7 @@ const viewRoutes = require('./routes/viewRoutes');
 const donorRoutes = require('./routes/donorRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const { apiLimiter } = require('./middleware/rateLimiter');
+const { statelessSessionMiddleware } = require('./middleware/statelessSession');
 
 const app = express();
 
@@ -38,22 +38,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Express Session Configuration
-const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'pu_blood_directory_nss_secret_key_2026',
-    resave: false,
-    saveUninitialized: false,
-    proxy: true,
-    cookie: {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
-  })
-);
+// Stateless Session Middleware (Vercel Serverless Compatible)
+app.use(statelessSessionMiddleware);
 
 // Serve static assets from public/
 app.use(express.static(path.join(__dirname, 'public')));

@@ -19,10 +19,23 @@ function adaptSql(sql) {
   return sql;
 }
 
+let dbInitPromise = null;
+
+function ensureDatabase() {
+  if (!dbInitPromise) {
+    dbInitPromise = initDatabase().catch(err => {
+      dbInitPromise = null;
+      throw err;
+    });
+  }
+  return dbInitPromise;
+}
+
 const db = {
   getEngine: () => dbType,
 
   async query(sql, params = []) {
+    await ensureDatabase();
     if (dbType === 'mysql') {
       return await pool.query(sql, params);
     } else {
