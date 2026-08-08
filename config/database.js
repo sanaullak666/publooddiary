@@ -68,14 +68,33 @@ const db = {
 };
 
 async function initDatabase() {
-  const dbHost = process.env.DB_HOST || 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com';
-  const dbUser = process.env.DB_USER || 'vhWoeruys6ZvbgF.root';
-  const dbPassword = process.env.DB_PASSWORD || '8LMTB3ARZzdZBPkB';
+  let dbHost = process.env.DB_HOST || 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com';
+  let dbUser = process.env.DB_USER || 'vhWoeruys6ZvbgF.root';
+  let dbPassword = process.env.DB_PASSWORD || '8LMTB3ARZzdZBPkB';
   let dbName = process.env.DB_NAME || 'test';
+  let dbPort = parseInt(process.env.DB_PORT || '4000', 10);
+
+  const databaseUrl = process.env.DATABASE_URL || process.env.MYSQL_URL || process.env.TIDB_URL;
+  if (databaseUrl) {
+    try {
+      const parsedUrl = new URL(databaseUrl);
+      if (parsedUrl.hostname) dbHost = parsedUrl.hostname;
+      if (parsedUrl.port) dbPort = parseInt(parsedUrl.port, 10);
+      if (parsedUrl.username) dbUser = decodeURIComponent(parsedUrl.username);
+      if (parsedUrl.password) dbPassword = decodeURIComponent(parsedUrl.password);
+      const dbPath = parsedUrl.pathname.replace(/^\//, '');
+      if (dbPath && dbPath !== 'sys') {
+        dbName = dbPath;
+      }
+    } catch (urlErr) {
+      console.warn(`[Database] Notice parsing DATABASE_URL: (${urlErr.message}). Using individual DB variables.`);
+    }
+  }
+
   if (dbName === 'sys') {
     dbName = 'test';
   }
-  const dbPort = parseInt(process.env.DB_PORT || '4000', 10);
+
   const useSsl = process.env.DB_SSL === 'false' ? false : true;
 
   const connectionOptions = {
