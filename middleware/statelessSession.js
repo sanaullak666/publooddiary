@@ -85,6 +85,12 @@ function statelessSessionMiddleware(req, res, next) {
     }
   };
 
+  const origWriteHead = res.writeHead;
+  res.writeHead = function (...args) {
+    setSessionCookie();
+    return origWriteHead.apply(this, args);
+  };
+
   const origJson = res.json;
   res.json = function (body) {
     setSessionCookie();
