@@ -57,26 +57,33 @@ async function initDatabase() {
   const dbHost = process.env.DB_HOST || 'localhost';
   const dbUser = process.env.DB_USER || 'root';
   const dbPassword = process.env.DB_PASSWORD || '';
-  const dbName = process.env.DB_NAME || 'pu_blood_db';
+  let dbName = process.env.DB_NAME || 'pu_blood_db';
+  if (dbName === 'sys') {
+    dbName = 'test';
+  }
   const dbPort = parseInt(process.env.DB_PORT || '3306', 10);
+  const useSsl = process.env.DB_SSL === 'true' || (dbHost && dbHost.includes('tidbcloud.com'));
+
+  const connectionOptions = {
+    host: dbHost,
+    port: dbPort,
+    user: dbUser,
+    password: dbPassword,
+    connectTimeout: 15000,
+    ...(useSsl ? { ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' } } : {})
+  };
 
   try {
-    const tempConn = await mysql.createConnection({
-      host: dbHost,
-      port: dbPort,
-      user: dbUser,
-      password: dbPassword,
-      connectTimeout: 2000
-    });
-
-    await tempConn.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`);
-    await tempConn.end();
+    try {
+      const tempConn = await mysql.createConnection(connectionOptions);
+      await tempConn.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`);
+      await tempConn.end();
+    } catch (createErr) {
+      console.warn(`[Database] Database creation check notice: (${createErr.message}).`);
+    }
 
     pool = mysql.createPool({
-      host: dbHost,
-      port: dbPort,
-      user: dbUser,
-      password: dbPassword,
+      ...connectionOptions,
       database: dbName,
       waitForConnections: true,
       connectionLimit: 10,
@@ -85,11 +92,11 @@ async function initDatabase() {
 
     await pool.query('SELECT 1');
     dbType = 'mysql';
-    console.log(`[Database] Connected successfully to MySQL database '${dbName}' on ${dbHost}:${dbPort}`);
+    console.log(`[Database] Connected successfully to MySQL/TiDB database '${dbName}' on ${dbHost}:${dbPort}`);
 
     await setupTablesMySQL();
   } catch (err) {
-    console.warn(`[Database] MySQL connection failed (${err.message}). Falling back to local SQLite database.`);
+    console.warn(`[Database] MySQL/TiDB connection failed (${err.message}). Falling back to local SQLite database.`);
     dbType = 'sqlite';
     const dbPath = path.join(dbDir, 'pu_blood.db');
     
