@@ -14,12 +14,6 @@ function ensureDbInit() {
 }
 
 module.exports = async (req, res) => {
-  ensureDbInit();
-  
-  // Only block for database initialization on API requests
-  if (req.url && (req.url.startsWith('/api/') || req.url.startsWith('/api'))) {
-    await dbPromise;
-  }
-  
+  await ensureDbInit();
   return app(req, res);
 };
