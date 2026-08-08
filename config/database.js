@@ -54,15 +54,15 @@ const db = {
 };
 
 async function initDatabase() {
-  const dbHost = process.env.DB_HOST || 'localhost';
-  const dbUser = process.env.DB_USER || 'root';
-  const dbPassword = process.env.DB_PASSWORD || '';
-  let dbName = process.env.DB_NAME || 'pu_blood_db';
+  const dbHost = process.env.DB_HOST || 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com';
+  const dbUser = process.env.DB_USER || 'vhWoeruys6ZvbgF.root';
+  const dbPassword = process.env.DB_PASSWORD || '8LMTB3ARZzdZBPkB';
+  let dbName = process.env.DB_NAME || 'test';
   if (dbName === 'sys') {
     dbName = 'test';
   }
-  const dbPort = parseInt(process.env.DB_PORT || '3306', 10);
-  const useSsl = process.env.DB_SSL === 'true' || (dbHost && dbHost.includes('tidbcloud.com'));
+  const dbPort = parseInt(process.env.DB_PORT || '4000', 10);
+  const useSsl = process.env.DB_SSL === 'false' ? false : true;
 
   const connectionOptions = {
     host: dbHost,
@@ -96,7 +96,15 @@ async function initDatabase() {
 
     await setupTablesMySQL();
   } catch (err) {
-    console.warn(`[Database] MySQL/TiDB connection failed (${err.message}). Falling back to local SQLite database.`);
+    console.error(`[Database] MySQL/TiDB connection failed (${err.message}).`);
+    
+    // On Vercel / serverless environments, file system is read-only, so SQLite fallback will fail.
+    if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      console.error(`[Database] Running on Vercel/Serverless environment. SQLite fallback disabled.`);
+      throw err;
+    }
+
+    console.warn(`[Database] Falling back to local SQLite database.`);
     dbType = 'sqlite';
     const dbPath = path.join(dbDir, 'pu_blood.db');
     

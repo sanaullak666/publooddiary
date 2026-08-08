@@ -12,6 +12,9 @@ const { apiLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 
+// Enable Trust Proxy for Vercel / Reverse Proxy (Fixes express-rate-limit and secure sessions)
+app.set('trust proxy', 1);
+
 // Security Headers with Helmet
 app.use(
   helmet({
@@ -35,15 +38,17 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Express Session
+// Express Session Configuration
+const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'pu_blood_directory_nss_secret_key_2026',
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
       httpOnly: true,
-      secure: false, // Set to true in production with HTTPS
+      secure: isProduction,
       sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
