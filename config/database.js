@@ -84,8 +84,8 @@ async function initDatabase() {
   console.log(`[Database] Fast Local Database initialized at: ${dbPath}`);
   await setupTablesSQLite();
 
-  // Attempt optional remote MySQL / TiDB connection only if explicitly requested via USE_REMOTE_DB
-  if (process.env.USE_REMOTE_DB === 'true') {
+  // Attempt remote MySQL / TiDB cloud connection (defaulting to persistent TiDB cloud database unless explicitly disabled via USE_REMOTE_DB=false)
+  if (process.env.USE_REMOTE_DB !== 'false') {
     let dbHost = process.env.DB_HOST || 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com';
     let dbUser = process.env.DB_USER || 'vhWoeruys6ZvbgF.root';
     let dbPassword = process.env.DB_PASSWORD || '8LMTB3ARZzdZBPkB';
