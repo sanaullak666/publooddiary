@@ -68,6 +68,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Pagination Event Delegation Listeners
+  const adminPagEl = document.getElementById('adminPagination');
+  if (adminPagEl) {
+    adminPagEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-page]');
+      if (!btn || btn.disabled) return;
+      const targetPage = parseInt(btn.dataset.page, 10);
+      if (!isNaN(targetPage) && targetPage > 0) {
+        loadDonors(targetPage);
+        const tableContainer = document.querySelector('.table-responsive');
+        if (tableContainer) tableContainer.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  }
+
+  const logsPagEl = document.getElementById('logsPagination');
+  if (logsPagEl) {
+    logsPagEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-page]');
+      if (!btn || btn.disabled) return;
+      const targetPage = parseInt(btn.dataset.page, 10);
+      if (!isNaN(targetPage) && targetPage > 0) {
+        loadAuditLogs(targetPage);
+      }
+    });
+  }
+
   // Logout Button Handler
   const logoutBtn = document.getElementById('adminLogoutBtn');
   if (logoutBtn) {
@@ -108,12 +135,13 @@ function switchAdminTab(tabName) {
 }
 
 async function loadAuditLogs(page = 1) {
+  const pageNum = parseInt(page, 10) || 1;
   const tbody = document.getElementById('auditLogsTableBody');
   const paginationEl = document.getElementById('logsPagination');
   if (!tbody) return;
 
   const search = document.getElementById('logSearchInput')?.value.trim() || '';
-  const params = new URLSearchParams({ page, limit: 15, search });
+  const params = new URLSearchParams({ page: pageNum, limit: 15, search });
 
   try {
     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:2rem;"><i class="fas fa-spinner fa-spin me-2"></i> Loading activity logs...</td></tr>';
@@ -138,13 +166,20 @@ async function loadAuditLogs(page = 1) {
       `).join('');
 
       if (paginationEl) {
+        const curPage = parseInt(data.page, 10) || 1;
+        const totPages = Math.max(1, parseInt(data.totalPages, 10) || 1);
+        const prevPage = curPage - 1;
+        const nextPage = curPage + 1;
+        const prevDisabled = curPage <= 1 ? 'disabled' : '';
+        const nextDisabled = curPage >= totPages ? 'disabled' : '';
+
         paginationEl.innerHTML = `
           <div style="font-size:0.88rem; color:var(--text-muted);">
-            Showing Log Page <strong>${data.page}</strong> of <strong>${data.totalPages}</strong> (${data.totalCount} Total System Events)
+            Showing Log Page <strong>${curPage}</strong> of <strong>${totPages}</strong> (${data.totalCount} Total System Events)
           </div>
-          <div style="display:flex; gap:8px;">
-            <button onclick="loadAuditLogs(${data.page - 1})" class="btn btn-sm btn-outline-red" ${data.page <= 1 ? 'disabled' : ''}>&larr; Previous</button>
-            <button onclick="loadAuditLogs(${data.page + 1})" class="btn btn-sm btn-outline-red" ${data.page >= data.totalPages ? 'disabled' : ''}>Next &rarr;</button>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            <button type="button" data-page="${prevPage}" onclick="window.loadAuditLogs(${prevPage})" class="btn btn-sm btn-outline-red" ${prevDisabled}>&larr; Previous</button>
+            <button type="button" data-page="${nextPage}" onclick="window.loadAuditLogs(${nextPage})" class="btn btn-sm btn-outline-red" ${nextDisabled}>Next &rarr;</button>
           </div>
         `;
       }
@@ -428,14 +463,15 @@ function toggleAddDonorForm(show) {
 }
 
 async function loadDonors(page = 1) {
-  currentPage = page;
+  const pageNum = parseInt(page, 10) || 1;
+  currentPage = pageNum;
   const tbody = document.getElementById('donorsTableBody');
   if (!tbody) return;
 
-  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:2rem;"><i class="fas fa-spinner fa-spin me-2"></i> Loading donor records...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:2rem;"><i class="fas fa-spinner fa-spin me-2"></i> Loading donor records...</td></tr>';
 
   const params = new URLSearchParams({
-    page: page,
+    page: pageNum,
     limit: 10,
     _t: Date.now(),
     search: document.getElementById('adminSearchInput')?.value.trim() || '',
@@ -509,17 +545,57 @@ function renderDonorsTable(donors) {
 }
 
 function renderPagination(page, totalPages, totalCount) {
-  currentTotalPages = totalPages;
+  const curPage = parseInt(page, 10) || 1;
+  const totPages = Math.max(1, parseInt(totalPages, 10) || 1);
+  const totCount = parseInt(totalCount, 10) || 0;
+
+  currentPage = curPage;
+  currentTotalPages = totPages;
+
   const paginationEl = document.getElementById('adminPagination');
   if (!paginationEl) return;
 
+  const prevPage = curPage - 1;
+  const nextPage = curPage + 1;
+
+  const prevDisabled = curPage <= 1 ? 'disabled' : '';
+  const nextDisabled = curPage >= totPages ? 'disabled' : '';
+
+  // Generate numbered page buttons (e.g. 1, 2, 3...)
+  let pageButtonsHtml = '';
+  const maxVisible = 5;
+  let startP = Math.max(1, curPage - Math.floor(maxVisible / 2));
+  let endP = Math.min(totPages, startP + maxVisible - 1);
+
+  if (endP - startP + 1 < maxVisible) {
+    startP = Math.max(1, endP - maxVisible + 1);
+  }
+
+  if (startP > 1) {
+    pageButtonsHtml += `<button type="button" data-page="1" onclick="window.loadDonors(1)" class="btn btn-sm btn-outline-red">1</button>`;
+    if (startP > 2) pageButtonsHtml += `<span style="align-self:center; color:var(--text-muted); font-size:0.85rem;">...</span>`;
+  }
+
+  for (let i = startP; i <= endP; i++) {
+    const isCurrent = i === curPage;
+    const btnStyle = isCurrent ? 'background:var(--primary-red); color:white; border-color:var(--primary-red);' : '';
+    const btnClass = isCurrent ? 'btn btn-sm' : 'btn btn-sm btn-outline-red';
+    pageButtonsHtml += `<button type="button" data-page="${i}" onclick="window.loadDonors(${i})" class="${btnClass}" style="${btnStyle}">${i}</button>`;
+  }
+
+  if (endP < totPages) {
+    if (endP < totPages - 1) pageButtonsHtml += `<span style="align-self:center; color:var(--text-muted); font-size:0.85rem;">...</span>`;
+    pageButtonsHtml += `<button type="button" data-page="${totPages}" onclick="window.loadDonors(${totPages})" class="btn btn-sm btn-outline-red">${totPages}</button>`;
+  }
+
   paginationEl.innerHTML = `
     <div style="font-size:0.88rem; color:var(--text-muted);">
-      Showing Page <strong>${page}</strong> of <strong>${totalPages}</strong> (${totalCount} Total Registered Donors)
+      Showing Page <strong>${curPage}</strong> of <strong>${totPages}</strong> (${totCount} Total Registered Donors)
     </div>
-    <div style="display:flex; gap:8px;">
-      <button onclick="loadDonors(${page - 1})" class="btn btn-sm btn-outline-red" ${page <= 1 ? 'disabled' : ''}>&larr; Previous</button>
-      <button onclick="loadDonors(${page + 1})" class="btn btn-sm btn-outline-red" ${page >= totalPages ? 'disabled' : ''}>Next &rarr;</button>
+    <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+      <button type="button" data-page="${prevPage}" onclick="window.loadDonors(${prevPage})" class="btn btn-sm btn-outline-red" ${prevDisabled}>&larr; Previous</button>
+      ${pageButtonsHtml}
+      <button type="button" data-page="${nextPage}" onclick="window.loadDonors(${nextPage})" class="btn btn-sm btn-outline-red" ${nextDisabled}>Next &rarr;</button>
     </div>
   `;
 }
