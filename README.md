@@ -160,5 +160,5 @@ Access the application in your browser:
 
 ## 📄 License & Copyright
 
-**© Pondicherry University. All Rights Reserved.**
+**© NSS Pondicherry University. All Rights Reserved.**
 An initiative by NSS Pondicherry University.
