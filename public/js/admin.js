@@ -73,6 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', handleLogout);
   }
+
+  // Initialize 30-Minute Inactivity Session Timeout
+  initInactivityTracker();
 });
 
 let currentPage = 1;
@@ -1082,6 +1085,32 @@ async function handleLogout() {
   } catch (err) {
     window.location.href = '/admin/login';
   }
+}
+
+// 30-Minute Inactivity Session Timeout Functions
+let inactivityTimer = null;
+const THIRTY_MINUTES_MS = 30 * 60 * 1000;
+
+function resetInactivityTimer() {
+  if (inactivityTimer) clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(autoLogoutDueToInactivity, THIRTY_MINUTES_MS);
+}
+
+async function autoLogoutDueToInactivity() {
+  if (typeof showToast === 'function') {
+    showToast('Session expired due to 30 minutes of inactivity.', 'error');
+  }
+  setTimeout(async () => {
+    await handleLogout();
+  }, 1000);
+}
+
+function initInactivityTracker() {
+  const activityEvents = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+  activityEvents.forEach(event => {
+    window.addEventListener(event, resetInactivityTimer, { passive: true });
+  });
+  resetInactivityTimer();
 }
 
 // Global Window Function Attachments for Inline Handlers

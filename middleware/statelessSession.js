@@ -41,10 +41,22 @@ function parseCookies(req) {
   return list;
 }
 
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes in milliseconds
+
 function statelessSessionMiddleware(req, res, next) {
   const cookies = parseCookies(req);
   const token = cookies.admin_session;
-  const sessionData = verifyToken(token) || {};
+  const verified = verifyToken(token);
+
+  let sessionData = {};
+  if (verified && verified.lastActivity) {
+    const isExpired = (Date.now() - verified.lastActivity) > SESSION_TIMEOUT_MS;
+    if (!isExpired) {
+      sessionData = verified;
+    }
+  } else if (verified) {
+    sessionData = verified;
+  }
 
   req.session = sessionData;
 
@@ -66,16 +78,18 @@ function statelessSessionMiddleware(req, res, next) {
   const setSessionCookie = () => {
     if (req.session && req.session.admin && !res.headersSent) {
       const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
+      const now = Date.now();
       const tokenPayload = {
         admin: req.session.admin,
-        exp: Date.now() + 24 * 60 * 60 * 1000
+        lastActivity: now,
+        exp: now + SESSION_TIMEOUT_MS
       };
       const signed = signToken(tokenPayload);
       const cookieOptions = [
         `admin_session=${encodeURIComponent(signed)}`,
         'Path=/',
         'HttpOnly',
-        'Max-Age=86400',
+        'Max-Age=1800',
         'SameSite=Lax'
       ];
       if (isProduction) {

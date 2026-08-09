@@ -7,12 +7,12 @@ function requireAdmin(req, res, next) {
   if (req.xhr || req.headers.accept?.includes('json') || req.path.startsWith('/api/')) {
     return res.status(401).json({
       success: false,
-      message: 'Unauthorized access. Please login as administrator.'
+      message: 'Session expired due to inactivity. Please log in again.'
     });
   }
 
   // Else redirect to admin login page
-  return res.redirect('/admin/login');
+  return res.redirect('/admin/login?reason=session_expired');
 }
 
 module.exports = {
