@@ -144,7 +144,18 @@ async function loadAuditLogs(page = 1) {
   const params = new URLSearchParams({ page: pageNum, limit: 15, search });
 
   try {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:2rem;"><i class="fas fa-spinner fa-spin me-2"></i> Loading activity logs...</td></tr>';
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align:center; padding:3rem 1rem;">
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;">
+            <svg class="custom-spinner" viewBox="25 25 50 50">
+              <circle r="20" cy="50" cx="50"></circle>
+            </svg>
+            <span style="font-weight:600; color:var(--text-muted); font-size:0.95rem;">Loading activity logs...</span>
+          </div>
+        </td>
+      </tr>
+    `;
     const res = await fetch(`/api/admin/logs?${params.toString()}`);
     const data = await res.json();
 
@@ -468,7 +479,18 @@ async function loadDonors(page = 1) {
   const tbody = document.getElementById('donorsTableBody');
   if (!tbody) return;
 
-  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem;"><i class="fas fa-spinner fa-spin me-2"></i> Loading donor records...</td></tr>';
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="7" style="text-align:center; padding:3rem 1rem;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;">
+          <svg class="custom-spinner" viewBox="25 25 50 50">
+            <circle r="20" cy="50" cx="50"></circle>
+          </svg>
+          <span style="font-weight:600; color:var(--text-muted); font-size:0.95rem;">Loading donor records...</span>
+        </div>
+      </td>
+    </tr>
+  `;
 
   const params = new URLSearchParams({
     page: pageNum,
