@@ -468,7 +468,7 @@ async function loadDonors(page = 1) {
   const tbody = document.getElementById('donorsTableBody');
   if (!tbody) return;
 
-  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:2rem;"><i class="fas fa-spinner fa-spin me-2"></i> Loading donor records...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem;"><i class="fas fa-spinner fa-spin me-2"></i> Loading donor records...</td></tr>';
 
   const params = new URLSearchParams({
     page: pageNum,
@@ -498,11 +498,11 @@ async function loadDonors(page = 1) {
       renderDonorsTable(data.donors || []);
       renderPagination(data.page || 1, data.totalPages || 1, data.totalCount || 0);
     } else {
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--primary-red); padding:2rem;">${data.message || 'Failed to load donors.'}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--primary-red); padding:2rem;">${data.message || 'Failed to load donors.'}</td></tr>`;
     }
   } catch (err) {
     console.error('Error loading donors:', err);
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:var(--primary-red); padding:2rem;">Network error loading records. Please refresh the page.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--primary-red); padding:2rem;">Network error loading records. Please refresh the page.</td></tr>';
   }
 }
 
@@ -516,7 +516,7 @@ function renderDonorsTable(donors) {
   if (!tbody) return;
 
   if (donors.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:2.5rem; color:var(--text-muted);"><i class="fas fa-info-circle me-2"></i> No donor records found matching your filters.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2.5rem; color:var(--text-muted);"><i class="fas fa-info-circle me-2"></i> No donor records found matching your filters.</td></tr>';
     return;
   }
 
@@ -530,8 +530,6 @@ function renderDonorsTable(donors) {
       <td><code>${d.register_number || ''}</code></td>
       <td>${d.department || ''}</td>
       <td><a href="tel:${d.contact_number || ''}"><i class="fas fa-phone me-1"></i> ${d.contact_number || ''}</a></td>
-      <td><a href="mailto:${d.email || ''}"><i class="fas fa-envelope me-1"></i> ${d.email || ''}</a></td>
-      <td>${formatDate(d.last_donated_date)}</td>
       <td>${eligibility.badgeHtml}</td>
       <td>
         <div style="display:flex; gap:6px; flex-wrap:nowrap; align-items:center;">
