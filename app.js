@@ -41,18 +41,18 @@ app.use(express.urlencoded({ extended: true }));
 // Stateless Session Middleware (Vercel Serverless Compatible)
 app.use(statelessSessionMiddleware);
 
-// Serve static assets from public/
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(process.cwd(), 'public')));
-
-// Disable Caching for all API Endpoints to ensure real-time data freshness
-app.use('/api', (req, res, next) => {
+// Disable Caching for all requests (pages, JS, API) to ensure real-time data freshness and prevent browser caching issues
+app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
   res.setHeader('Surrogate-Control', 'no-store');
   next();
 });
+
+// Serve static assets from public/
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(process.cwd(), 'public')));
 
 // Global API rate limit
 app.use('/api/', apiLimiter);
