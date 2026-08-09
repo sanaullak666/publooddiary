@@ -588,7 +588,7 @@ function openAddDonorModal() {
       <form id="adminAddForm" onsubmit="event.preventDefault();" style="display:flex; flex-direction:column; gap:12px; max-height:70vh; overflow-y:auto; padding-right:6px;">
         <div class="form-group">
           <label class="form-label">Full Name <span style="color:var(--primary-red);">*</span></label>
-          <input type="text" id="addName" class="form-control" placeholder="e.g. Sanaulla K" required>
+          <input type="text" id="addName" class="form-control" placeholder="Enter your Name" required>
         </div>
 
         <div class="form-group">
