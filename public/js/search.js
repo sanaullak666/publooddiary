@@ -96,6 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ${donors.map(donor => {
           const eligibility = getDonationEligibility(donor.last_donated_date);
 
+          const msgText = `Hello Admin, I am requesting contact details for voluntary blood donor:\n• Name: ${donor.name}\n• Blood Group: ${donor.blood_group}\n• Department: ${donor.department}\n• State/UT: ${donor.state_ut}`;
+          const encodedMsg = encodeURIComponent(msgText);
+          const admin1WaUrl = `https://wa.me/919188382205?text=${encodedMsg}`;
+          const admin2WaUrl = `https://wa.me/919444470765?text=${encodedMsg}`;
+
           return `
           <div class="donor-card" style="display:flex; flex-direction:column; justify-content:space-between;">
             <div>
@@ -126,9 +131,18 @@ document.addEventListener('DOMContentLoaded', () => {
               </p>
             </div>
 
-            <div style="margin-top:1.25rem; padding-top:0.8rem; border-top:1px solid var(--border-color); display:flex; gap:8px;">
-              <a href="tel:${donor.contact_number}" class="btn btn-sm btn-outline-red" style="flex:1;"><i class="fas fa-phone"></i> Call</a>
-              <a href="mailto:${donor.email}" class="btn btn-sm btn-secondary"><i class="fas fa-envelope"></i> Email</a>
+            <div style="margin-top:1.25rem; padding-top:0.8rem; border-top:1px solid var(--border-color);">
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem; text-align:center; font-weight:600;">
+                <i class="fas fa-user-shield me-1 text-primary-red"></i> Request Contact from Admin:
+              </p>
+              <div style="display:flex; gap:8px;">
+                <a href="${admin1WaUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-soft-red" style="flex:1; justify-content:center; text-decoration:none; white-space:nowrap;">
+                  <i class="fab fa-whatsapp" style="color:#25D366; font-size:1.1rem; margin-right:4px;"></i> Admin 1
+                </a>
+                <a href="${admin2WaUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-red" style="flex:1; justify-content:center; text-decoration:none; white-space:nowrap;">
+                  <i class="fab fa-whatsapp" style="color:#25D366; font-size:1.1rem; margin-right:4px;"></i> Admin 2
+                </a>
+              </div>
             </div>
           </div>
         `}).join('')}

@@ -298,7 +298,7 @@ const DonorModel = {
     const whereSql = whereConditions.length > 0 ? 'WHERE ' + whereConditions.join(' AND ') : '';
 
     const sql = `
-      SELECT id, name, blood_group, department, contact_number, email, state_ut, languages, last_donated_date
+      SELECT id, name, blood_group, department, state_ut, languages, last_donated_date
       FROM donors
       ${whereSql}
       ORDER BY name ASC
