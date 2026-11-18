@@ -365,13 +365,13 @@ async function handleTabAddDonorSubmit(e) {
 async function checkAdminSession() {
   try {
     const res = await fetch('/api/admin/session');
-    if (res.status === 401) {
-      window.location.href = '/adminLogin';
+    if (res.status === 401 || res.status === 404) {
+      window.location.href = '/404';
       return;
     }
     const data = await res.json();
     if (!data.authenticated) {
-      window.location.href = '/adminLogin';
+      window.location.href = '/404';
     } else {
       const nameEl = document.getElementById('adminNameDisplay');
       if (nameEl) {
@@ -381,7 +381,7 @@ async function checkAdminSession() {
     }
   } catch (err) {
     console.error('Session check failed:', err);
-    window.location.href = '/adminLogin';
+    window.location.href = '/404';
   }
 }
 
@@ -510,8 +510,8 @@ async function loadDonors(page = 1) {
 
   try {
     const res = await fetch(`/api/admin/donors?${params.toString()}`);
-    if (res.status === 401) {
-      window.location.href = '/adminLogin';
+    if (res.status === 401 || res.status === 404) {
+      window.location.href = '/404';
       return;
     }
     const data = await res.json();
@@ -1176,10 +1176,10 @@ async function handleLogout() {
   try {
     const res = await fetch('/api/admin/logout', { method: 'POST' });
     if (res.ok) {
-      window.location.href = '/adminLogin';
+      window.location.href = '/';
     }
   } catch (err) {
-    window.location.href = '/adminLogin';
+    window.location.href = '/';
   }
 }
 

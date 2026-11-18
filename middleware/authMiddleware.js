@@ -3,16 +3,16 @@ function requireAdmin(req, res, next) {
     return next();
   }
   
-  // If API request, return 401 JSON
+  // If API request, return 404 JSON to mask admin endpoints
   if (req.xhr || req.headers.accept?.includes('json') || req.path.startsWith('/api/')) {
-    return res.status(401).json({
+    return res.status(404).json({
       success: false,
-      message: 'Session expired due to inactivity. Please log in again.'
+      message: 'Not Found'
     });
   }
 
-  // Else redirect to admin login page
-  return res.redirect('/adminLogin?reason=session_expired');
+  // If unauthenticated browser request, redirect to 404 Not Found page
+  return res.redirect('/404');
 }
 
 module.exports = {

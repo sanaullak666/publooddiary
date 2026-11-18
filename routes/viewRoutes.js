@@ -41,15 +41,14 @@ router.get('/adminLogin', (req, res) => {
   sendView(res, 'admin-login.html');
 });
 
-// Admin Dashboard Route (Requires Authentication)
+// Admin Dashboard Route (Requires Authentication - unauthenticated requests are redirected to /404)
 router.get('/admin/dashboard', requireAdmin, (req, res) => {
   sendView(res, 'admin-dashboard.html');
 });
 
-// Explicitly show 404 Not Found whenever someone accesses /admin or /admin/login
-router.get(['/admin', '/admin/', '/admin/login'], (req, res) => {
-  res.status(404);
-  sendView(res, '404.html');
+// Catch-all for /admin and any sub-routes under /admin: redirect directly to /404
+router.all('/admin*', (req, res) => {
+  return res.redirect('/404');
 });
 
 // 404 Not Found Route
