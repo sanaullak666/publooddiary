@@ -12,7 +12,7 @@ function requireAdmin(req, res, next) {
   }
 
   // Else redirect to admin login page
-  return res.redirect('/admin/login?reason=session_expired');
+  return res.redirect('/adminLogin?reason=session_expired');
 }
 
 module.exports = {

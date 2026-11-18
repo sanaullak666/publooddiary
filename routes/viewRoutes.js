@@ -33,15 +33,29 @@ router.get('/search', (req, res) => {
   sendView(res, 'search.html');
 });
 
-router.get('/admin/login', (req, res) => {
+// Admin Login Route
+router.get('/adminLogin', (req, res) => {
   if (req.session && req.session.admin) {
     return res.redirect('/admin/dashboard');
   }
   sendView(res, 'admin-login.html');
 });
 
+// Admin Dashboard Route (Requires Authentication)
 router.get('/admin/dashboard', requireAdmin, (req, res) => {
   sendView(res, 'admin-dashboard.html');
+});
+
+// Explicitly show 404 Not Found whenever someone accesses /admin or /admin/login
+router.get(['/admin', '/admin/', '/admin/login'], (req, res) => {
+  res.status(404);
+  sendView(res, '404.html');
+});
+
+// 404 Not Found Route
+router.get('/404', (req, res) => {
+  res.status(404);
+  sendView(res, '404.html');
 });
 
 router.get(['/favicon.ico', '/favicon.png'], (req, res) => {

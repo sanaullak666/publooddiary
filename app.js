@@ -69,12 +69,15 @@ app.use((req, res) => {
   if (req.xhr || req.headers.accept?.includes('json') || req.path.startsWith('/api/')) {
     return res.status(404).json({ success: false, message: 'API Endpoint Not Found' });
   }
-  const indexPath = path.join(__dirname, 'views', 'index.html');
-  const altIndexPath = path.join(process.cwd(), 'views', 'index.html');
-  if (require('fs').existsSync(indexPath)) {
-    return res.status(404).sendFile(indexPath);
+  const notFoundPath = path.join(__dirname, 'views', '404.html');
+  const altNotFoundPath = path.join(process.cwd(), 'views', '404.html');
+  if (require('fs').existsSync(notFoundPath)) {
+    return res.status(404).sendFile(notFoundPath);
   }
-  return res.status(404).sendFile(altIndexPath);
+  if (require('fs').existsSync(altNotFoundPath)) {
+    return res.status(404).sendFile(altNotFoundPath);
+  }
+  return res.status(404).send('404 - Page Not Found');
 });
 
 // Centralized Error Handling Middleware

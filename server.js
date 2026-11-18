@@ -20,7 +20,7 @@ async function startServer() {
 
     app.listen(PORT, () => {
       console.log(`[Server] PU Blood Diary running on http://localhost:${PORT}`);
-      console.log(`[Server] Admin Portal available at http://localhost:${PORT}/admin/login`);
+      console.log(`[Server] Admin Portal available at http://localhost:${PORT}/adminLogin`);
       console.log('----------------------------------------------------');
     });
   } catch (err) {
