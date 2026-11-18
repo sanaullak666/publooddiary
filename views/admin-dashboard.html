@@ -2,42 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14213D">
   <title>Admin Dashboard · PU Blood Diary</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/css/style.css?v=1.1.0">
-  <style>
-    .admin-tab-bar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 1.5rem;
-      border-bottom: 2px solid var(--border-color);
-      padding-bottom: 2px;
-    }
-    .admin-tab-btn {
-      padding: 0.75rem 1.5rem;
-      font-weight: 600;
-      font-size: 0.95rem;
-      border: none;
-      background: none;
-      color: var(--text-muted);
-      border-bottom: 3px solid transparent;
-      cursor: pointer;
-      transition: var(--transition-fast);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .admin-tab-btn:hover {
-      color: var(--primary-red);
-    }
-    .admin-tab-btn.active {
-      color: var(--primary-red);
-      border-bottom-color: var(--primary-red);
-      background: var(--primary-red-subtle);
-      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/style.css?v=2.0.0">
 </head>
 <body>
 
@@ -51,14 +20,14 @@
           <img src="/images/40yearslogo.jpg" alt="40 Years" class="header-logo-40">
         </div>
         <div class="brand-text ms-2">
-          <h1 style="color:white;">PU Blood Diary <span class="badge-soft-red" style="font-size:0.75rem; background:rgba(255,255,255,0.2); color:white;">Admin Portal</span></h1>
-          <span class="brand-tagline" style="color:#FFCDD2;">An initiative by NSS Pondicherry University</span>
+          <h1>PU Blood Diary <span class="badge-soft-red" style="font-size:0.75rem; background:rgba(255,255,255,0.2); color:white;">Admin Portal</span></h1>
+          <span class="brand-tagline">An initiative by NSS Pondicherry University</span>
         </div>
       </a>
 
-      <div style="display:flex; align-items:center; gap:1.25rem;">
-        <span style="font-size:0.9rem; color:#E2E8F0;"><i class="fas fa-user-circle me-1"></i> <strong id="adminNameDisplay" style="color:white;">Admin</strong></span>
-        <button id="adminLogoutBtn" class="btn btn-sm btn-outline-red" style="border-color:rgba(255,255,255,0.4); color:white;">
+      <div class="admin-header-actions">
+        <span class="admin-user"><i class="fas fa-user-circle me-1"></i> <strong id="adminNameDisplay">Admin</strong></span>
+        <button id="adminLogoutBtn" class="btn btn-sm btn-outline-red btn-logout">
           <i class="fas fa-sign-out-alt me-1"></i> Logout
         </button>
       </div>
@@ -85,12 +54,12 @@
     <section id="tabSectionDirectory" style="display:block;">
       
       <!-- Filter & Actions Card -->
-      <div class="glass-card" style="margin-bottom:1.5rem; padding:1.5rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:1rem;">
-          <h3 style="font-size:1.2rem; font-weight:700;"><i class="fas fa-database text-primary-red me-2"></i> Donor Record Management</h3>
+      <div class="glass-card admin-card">
+        <div class="panel-head">
+          <h3><i class="fas fa-database text-primary-red me-2"></i> Donor Record Management</h3>
           
           <!-- Action & Export Buttons -->
-          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <div class="action-bar">
             <button type="button" id="btnNavRegisterDonor" onclick="switchAdminTab('addDonor')" class="btn btn-sm btn-soft-red"><i class="fas fa-user-plus me-1"></i> Register New Donor</button>
             <button type="button" id="btnExportCsv" onclick="triggerExport('csv')" class="btn btn-sm btn-outline-red"><i class="fas fa-file-csv me-1"></i> Export CSV</button>
             <button type="button" id="btnExportExcel" onclick="triggerExport('excel')" class="btn btn-sm btn-outline-red"><i class="fas fa-file-excel me-1"></i> Export Excel</button>
@@ -99,9 +68,9 @@
         </div>
 
         <form id="adminFilterForm">
-          <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+          <div class="filter-grid">
             <!-- Keyword Search -->
-            <div class="form-group" style="grid-column: span 2;">
+            <div class="form-group filter-search">
               <label class="form-label" for="adminSearchInput">Global Search Keyword</label>
               <input type="text" id="adminSearchInput" class="form-control" placeholder="Search Name, Reg No, Email, Phone...">
             </div>
@@ -188,7 +157,7 @@
               <input type="date" id="adminFilterDateEnd" class="form-control">
             </div>
 
-            <div class="form-group" style="grid-column: 1 / -1; display:flex; gap:10px; justify-content:flex-end; margin-top:0.5rem;">
+            <div class="filter-actions">
               <button type="reset" class="btn btn-secondary"><i class="fas fa-undo me-1"></i> Reset Filters</button>
               <button type="submit" class="btn btn-soft-red"><i class="fas fa-search me-1"></i> Apply Filters</button>
             </div>
@@ -197,8 +166,9 @@
       </div>
 
       <!-- Donor Management Table -->
+      <p class="table-hint"><i class="fas fa-arrows-left-right"></i> Swipe the table sideways to see all columns.</p>
       <div class="table-responsive">
-        <table class="data-table">
+        <table class="data-table data-table-donors">
           <thead>
             <tr>
               <th>Name</th>
@@ -222,11 +192,11 @@
 
     <!-- TAB 2: REGISTER NEW DONOR FORM -->
     <section id="tabSectionAddDonor" style="display:none;">
-      <div class="glass-card" style="border-left:4px solid var(--primary-red); padding:2rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+      <div class="glass-card admin-card accent-red">
+        <div class="panel-head">
           <div>
-            <h2 style="font-size:1.4rem; font-weight:700; color:var(--primary-red);"><i class="fas fa-user-plus me-2"></i> Register New Blood Donor</h2>
-            <p style="font-size:0.9rem; color:var(--text-muted); margin-top:4px;">Add a new student/staff donor record directly to the database.</p>
+            <h2 style="color:var(--primary-red);"><i class="fas fa-user-plus me-2"></i> Register New Blood Donor</h2>
+            <p>Add a new student/staff donor record directly to the database.</p>
           </div>
           <button type="button" id="btnBackToDirTop" class="btn btn-secondary btn-back-directory" onclick="switchAdminTab('directory')"><i class="fas fa-arrow-left me-1"></i> Back to Directory</button>
         </div>
@@ -331,9 +301,9 @@
               </select>
             </div>
 
-            <div class="form-group full-width" style="display:flex; justify-content:flex-end; gap:12px; margin-top:1.5rem;">
+            <div class="form-group full-width form-actions">
               <button type="button" id="btnBackToDirBottom" class="btn btn-secondary btn-back-directory" onclick="switchAdminTab('directory')"><i class="fas fa-arrow-left me-1"></i> Cancel & Back to Directory</button>
-              <button type="submit" class="btn btn-soft-red" style="padding:0.75rem 2rem;"><i class="fas fa-check-circle me-1"></i> Save & Add Donor Record</button>
+              <button type="submit" class="btn btn-soft-red"><i class="fas fa-check-circle me-1"></i> Save & Add Donor Record</button>
             </div>
           </div>
         </form>
@@ -342,23 +312,24 @@
 
     <!-- TAB 3: AUDIT LOGS HISTORY -->
     <section id="tabSectionLogs" style="display:none;">
-      <div class="glass-card" style="border-left:4px solid var(--navy); padding:2rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+      <div class="glass-card admin-card accent-navy">
+        <div class="panel-head">
           <div>
-            <h2 style="font-size:1.4rem; font-weight:700; color:var(--navy);"><i class="fas fa-history me-2"></i> System Audit & Activity Logs</h2>
-            <p style="font-size:0.9rem; color:var(--text-muted); margin-top:4px;">Audit trail of all administrative actions, data exports, donor modifications, and security events.</p>
+            <h2 style="color:var(--navy);"><i class="fas fa-history me-2"></i> System Audit & Activity Logs</h2>
+            <p>Audit trail of all administrative actions, data exports, donor modifications, and security events.</p>
           </div>
           <button type="button" onclick="switchAdminTab('directory')" class="btn btn-secondary btn-back-directory"><i class="fas fa-arrow-left me-1"></i> Back to Directory</button>
         </div>
 
         <!-- Audit Logs Search & Filter -->
         <div class="form-group" style="margin-bottom:1.5rem;">
-          <div style="display:flex; gap:10px;">
+          <div class="search-row">
             <input type="text" id="logSearchInput" class="form-control" placeholder="Filter audit logs by admin username, action type, or details..." oninput="loadAuditLogs(1)">
             <button type="button" class="btn btn-navy" onclick="loadAuditLogs(1)"><i class="fas fa-search"></i> Search Logs</button>
           </div>
         </div>
 
+        <p class="table-hint"><i class="fas fa-arrows-left-right"></i> Swipe the table sideways to see all columns.</p>
         <div class="table-responsive">
           <table class="data-table">
             <thead>
@@ -384,7 +355,7 @@
 
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
-    <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:0.75rem;">
+    <div class="footer-logos">
       <img src="/images/nsslogo.jpg" alt="NSS Logo" class="footer-logo-img" style="border-radius:50%;">
       <img src="/images/pondilogo.png" alt="PU Logo" class="footer-logo-img">
       <img src="/images/40yearslogo.jpg" alt="40 Years Logo" class="footer-logo-img" style="border-radius:4px;">
@@ -396,7 +367,7 @@
     </div>
   </footer>
 
-  <script src="/js/main.js?v=1.1.0"></script>
-  <script src="/js/admin.js?v=1.1.0"></script>
+  <script src="/js/main.js?v=2.0.0"></script>
+  <script src="/js/admin.js?v=2.0.0"></script>
 </body>
 </html>

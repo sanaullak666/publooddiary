@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14213D">
   <title>PU Blood Diary · NSS Pondicherry University</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/css/style.css?v=1.1.0">
+  <link rel="stylesheet" href="/css/style.css?v=2.0.0">
 </head>
 <body>
 
@@ -39,12 +40,12 @@
   <!-- ===== HERO SECTION ===== -->
   <main class="main-content">
     <section class="hero-section">
-      <div>
+      <div class="hero-copy">
         <div class="hero-badge">
-          <i class="fas fa-university text-primary-red"></i> <span>Pondicherry University</span>
+          <i class="fas fa-university"></i> <span>Pondicherry University</span>
         </div>
 
-        <h1 class="hero-title">PU Blood <span class="text-primary-red">Diary</span></h1>
+        <h1 class="hero-title">PU Blood Diary</h1>
         <p class="hero-subtitle">An initiative by NSS Pondicherry University</p>
 
         <p class="hero-description">
@@ -62,82 +63,90 @@
             <i class="fas fa-headset"></i> Contact Us
           </a>
         </div>
-      </div>
 
-      <div class="hero-illustration" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        <i class="fas fa-hand-holding-heart"></i>
         <div class="hero-logos-container">
           <img src="/images/nsslogo.jpg" alt="NSS" class="hero-logo-img" style="border-radius:50%;">
           <img src="/images/pondilogo.png" alt="Pondicherry University" class="hero-logo-img">
           <img src="/images/40yearslogo.jpg" alt="40 Years" class="hero-logo-img" style="border-radius:8px;">
+          <span class="hero-logos-caption">National Service Scheme<br>Pondicherry University</span>
         </div>
       </div>
+
+      <aside class="blood-board" aria-labelledby="bloodBoardTitle">
+        <h2 class="blood-board-title" id="bloodBoardTitle">Need blood now?</h2>
+        <p class="blood-board-sub">Pick the blood group you need. We will open a WhatsApp message to an NSS admin.</p>
+        <div class="blood-board-grid">
+          <a class="blood-tile" href="/search?blood_group=A%2B" aria-label="Request A positive blood"><span class="bt-l">A</span><span class="bt-s">+</span></a>
+          <a class="blood-tile" href="/search?blood_group=A-" aria-label="Request A negative blood"><span class="bt-l">A</span><span class="bt-s">&minus;</span></a>
+          <a class="blood-tile" href="/search?blood_group=B%2B" aria-label="Request B positive blood"><span class="bt-l">B</span><span class="bt-s">+</span></a>
+          <a class="blood-tile" href="/search?blood_group=B-" aria-label="Request B negative blood"><span class="bt-l">B</span><span class="bt-s">&minus;</span></a>
+          <a class="blood-tile" href="/search?blood_group=AB%2B" aria-label="Request AB positive blood"><span class="bt-l">AB</span><span class="bt-s">+</span></a>
+          <a class="blood-tile" href="/search?blood_group=AB-" aria-label="Request AB negative blood"><span class="bt-l">AB</span><span class="bt-s">&minus;</span></a>
+          <a class="blood-tile" href="/search?blood_group=O%2B" aria-label="Request O positive blood"><span class="bt-l">O</span><span class="bt-s">+</span></a>
+          <a class="blood-tile" href="/search?blood_group=O-" aria-label="Request O negative blood"><span class="bt-l">O</span><span class="bt-s">&minus;</span></a>
+        </div>
+        <a class="blood-board-more" href="/search">Rare groups (Bombay, Rh-null) and more</a>
+      </aside>
     </section>
 
     <!-- ===== FEATURES SECTION ===== -->
-    <section class="glass-card" style="padding:2.5rem 2rem;">
-      <div style="text-align:center; margin-bottom:2rem;">
-        <h2 style="font-size:1.8rem; font-weight:700;">Why PU Blood Diary?</h2>
-        <div class="section-divider" style="margin:0.5rem auto 1.5rem auto;"></div>
+    <section class="panel">
+      <div class="section-heading">
+        <h2>Why PU Blood Diary?</h2>
+        <div class="section-divider"></div>
       </div>
 
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1.5rem;">
-        <div class="glass-card" style="padding:1.5rem; text-align:center; margin-bottom:0;">
-          <div class="feature-icon" style="margin:0 auto 1rem auto;"><i class="fas fa-user-plus"></i></div>
-          <h4 style="font-size:1.1rem;">Register as Donor</h4>
-          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:6px;">Simple registration system across all 45 university departments.</p>
+      <div class="feature-strip">
+        <div class="feature">
+          <div class="feature-icon"><i class="fas fa-user-plus"></i></div>
+          <h3>Register as Donor</h3>
+          <p>Simple registration system across all 45 university departments.</p>
         </div>
 
-        <div class="glass-card" style="padding:1.5rem; text-align:center; margin-bottom:0;">
-          <div class="feature-icon" style="margin:0 auto 1rem auto;"><i class="fas fa-search"></i></div>
-          <h4 style="font-size:1.1rem;">Quick Search</h4>
-          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:6px;">Filter voluntary donors by blood group, department, or state.</p>
+        <div class="feature">
+          <div class="feature-icon"><i class="fas fa-search"></i></div>
+          <h3>Quick Search</h3>
+          <p>Filter voluntary donors by blood group, department, or state.</p>
         </div>
 
-        <div class="glass-card" style="padding:1.5rem; text-align:center; margin-bottom:0;">
-          <div class="feature-icon" style="margin:0 auto 1rem auto;"><i class="fas fa-phone-alt"></i></div>
-          <h4 style="font-size:1.1rem;">Emergency Access</h4>
-          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:6px;">Facilitates swift contact with potential donors via Admins.</p>
+        <div class="feature">
+          <div class="feature-icon"><i class="fas fa-phone-alt"></i></div>
+          <h3>Emergency Access</h3>
+          <p>Facilitates swift contact with potential donors via Admins.</p>
         </div>
 
-        <div class="glass-card" style="padding:1.5rem; text-align:center; margin-bottom:0;">
-          <div class="feature-icon" style="margin:0 auto 1rem auto;"><i class="fas fa-shield-alt"></i></div>
-          <h4 style="font-size:1.1rem;">Privacy Protected</h4>
-          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:6px;">Donor contact details are protected and shared safely via Admin WhatsApp.</p>
+        <div class="feature">
+          <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+          <h3>Privacy Protected</h3>
+          <p>Donor contact details are protected and shared safely via Admin WhatsApp.</p>
         </div>
       </div>
     </section>
 
     <!-- ===== CONTACT US SECTION ===== -->
-    <section id="contact-us" class="glass-card" style="padding:2.5rem 2rem; margin-top:2rem;">
-      <div style="text-align:center; margin-bottom:2rem;">
-        <h2 style="font-size:1.8rem; font-weight:700; color:var(--primary-red);">
-          <i class="fas fa-headset me-2"></i> Contact Us / Admin Support
-        </h2>
-        <p style="color:var(--text-muted); margin-top:0.5rem; max-width:650px; margin-left:auto; margin-right:auto;">
-          To request blood donor contact details during medical emergencies or for any support, please contact the Admins directly via Call or WhatsApp:
-        </p>
-        <div class="section-divider" style="margin:0.75rem auto 1.5rem auto;"></div>
+    <section id="contact-us" class="contact-panel">
+      <div class="section-heading">
+        <h2><i class="fas fa-headset me-2"></i> Contact Us / Admin Support</h2>
+        <p>To request blood donor contact details during medical emergencies or for any support, please contact the Admins directly via Call or WhatsApp:</p>
+        <div class="section-divider"></div>
       </div>
 
-      <div style="display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap;">
-        <div class="glass-card" style="padding:1.5rem; text-align:center; min-width:280px; margin-bottom:0; flex:1; max-width:380px; border-top:4px solid var(--primary-red);">
-          <div class="feature-icon" style="margin:0 auto 1rem auto; background:#25D366; color:white;"><i class="fab fa-whatsapp"></i></div>
-          <h4 style="font-size:1.15rem; font-weight:700;">Admin Line 1</h4>
-          <p style="font-size:1.35rem; font-weight:800; color:var(--primary-red); margin:0.5rem 0;">+91 9188382205</p>
-          <div style="display:flex; gap:10px; justify-content:center; margin-top:1rem;">
+      <div class="admin-lines">
+        <div class="admin-line">
+          <h3><i class="fab fa-whatsapp"></i> Admin Line 1</h3>
+          <p class="admin-number">+91 9188382205</p>
+          <div class="admin-line-actions">
             <a href="tel:9188382205" class="btn btn-sm btn-outline-red"><i class="fas fa-phone"></i> Call</a>
-            <a href="https://wa.me/919188382205?text=Hello%20Admin,%20I%20need%20blood%20donor%20assistance." target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-soft-red"><i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp</a>
+            <a href="https://wa.me/919188382205?text=Hello%20Admin,%20I%20need%20blood%20donor%20assistance." target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
           </div>
         </div>
 
-        <div class="glass-card" style="padding:1.5rem; text-align:center; min-width:280px; margin-bottom:0; flex:1; max-width:380px; border-top:4px solid var(--primary-red);">
-          <div class="feature-icon" style="margin:0 auto 1rem auto; background:#25D366; color:white;"><i class="fab fa-whatsapp"></i></div>
-          <h4 style="font-size:1.15rem; font-weight:700;">Admin Line 2</h4>
-          <p style="font-size:1.35rem; font-weight:800; color:var(--primary-red); margin:0.5rem 0;">+91 9444470765</p>
-          <div style="display:flex; gap:10px; justify-content:center; margin-top:1rem;">
+        <div class="admin-line">
+          <h3><i class="fab fa-whatsapp"></i> Admin Line 2</h3>
+          <p class="admin-number">+91 9444470765</p>
+          <div class="admin-line-actions">
             <a href="tel:9444470765" class="btn btn-sm btn-outline-red"><i class="fas fa-phone"></i> Call</a>
-            <a href="https://wa.me/919444470765?text=Hello%20Admin,%20I%20need%20blood%20donor%20assistance." target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-soft-red"><i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp</a>
+            <a href="https://wa.me/919444470765?text=Hello%20Admin,%20I%20need%20blood%20donor%20assistance." target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
           </div>
         </div>
       </div>
@@ -146,7 +155,7 @@
 
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
-    <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:0.75rem;">
+    <div class="footer-logos">
       <img src="/images/nsslogo.jpg" alt="NSS Logo" class="footer-logo-img" style="border-radius:50%;">
       <img src="/images/pondilogo.png" alt="PU Logo" class="footer-logo-img">
       <img src="/images/40yearslogo.jpg" alt="40 Years Logo" class="footer-logo-img" style="border-radius:4px;">
@@ -158,6 +167,6 @@
     </div>
   </footer>
 
-  <script src="/js/main.js?v=1.1.0"></script>
+  <script src="/js/main.js?v=1.0.2"></script>
 </body>
 </html>

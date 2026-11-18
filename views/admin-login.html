@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14213D">
   <title>Admin Login · PU Blood Diary</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/css/style.css?v=1.1.0">
+  <link rel="stylesheet" href="/css/style.css?v=2.0.0">
 </head>
-<body style="background: var(--bg-subtle);">
+<body class="page-login">
 
   <!-- ===== NAVBAR ===== -->
   <header class="site-header">
@@ -24,40 +25,43 @@
         </div>
       </a>
 
+      <button class="mobile-nav-toggle" aria-label="Toggle Menu"><i class="fas fa-bars"></i></button>
+
       <ul class="nav-links">
         <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
         <li><a href="/register" class="nav-link"><i class="fas fa-heart"></i> Register</a></li>
         <li><a href="/update-donation" class="nav-link"><i class="fas fa-calendar-alt"></i> Update</a></li>
+        <li><a href="/search" class="nav-link"><i class="fas fa-hand-holding-medical"></i> Request Blood</a></li>
         <li><a href="/admin/login" class="nav-link btn-admin-nav active"><i class="fas fa-lock"></i> Admin</a></li>
       </ul>
     </div>
   </header>
 
   <!-- ===== LOGIN CARD ===== -->
-  <main class="main-content" style="display:flex; align-items:center; justify-content:center; min-height: calc(100vh - 180px);">
-    <div class="glass-card" style="max-width: 440px; width:100%; border-top: 5px solid var(--primary-red); padding:3rem 2.2rem;">
-      <div class="card-header" style="text-align:center; border-bottom:none; margin-bottom:1rem;">
-        <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:1rem;">
-          <img src="/images/nsslogo.jpg" alt="NSS Logo" style="height:40px; border-radius:50%;">
-          <img src="/images/pondilogo.png" alt="PU Logo" style="height:44px;">
-          <img src="/images/40yearslogo.jpg" alt="40 Years Logo" style="height:40px; border-radius:4px;">
+  <main class="main-content login-main">
+    <div class="glass-card login-card">
+      <div class="card-header">
+        <div class="login-logos">
+          <img src="/images/nsslogo.jpg" alt="NSS Logo" class="logo-round">
+          <img src="/images/pondilogo.png" alt="PU Logo">
+          <img src="/images/40yearslogo.jpg" alt="40 Years Logo" class="logo-soft">
         </div>
-        <h1 class="card-title" style="font-size:1.6rem;">Administrator Login</h1>
+        <h1 class="card-title">Administrator Login</h1>
         <p class="card-subtitle">NSS Pondicherry University Portal</p>
       </div>
 
       <form id="adminLoginForm">
-        <div class="form-group" style="margin-bottom: 1.25rem;">
+        <div class="form-group">
           <label class="form-label" for="adminUsername">Username <span class="required">*</span></label>
-          <input type="text" id="adminUsername" name="username" class="form-control" placeholder="Enter admin username" required style="border-radius:var(--radius-pill); padding:0.75rem 1.4rem;">
+          <input type="text" id="adminUsername" name="username" class="form-control" placeholder="Enter admin username" required autocomplete="username">
         </div>
 
-        <div class="form-group" style="margin-bottom: 1.5rem;">
+        <div class="form-group">
           <label class="form-label" for="adminPassword">Password <span class="required">*</span></label>
-          <input type="password" id="adminPassword" name="password" class="form-control" placeholder="Enter admin password" required style="border-radius:var(--radius-pill); padding:0.75rem 1.4rem;">
+          <input type="password" id="adminPassword" name="password" class="form-control" placeholder="Enter admin password" required autocomplete="current-password">
         </div>
 
-        <button type="submit" class="btn btn-soft-red" style="width:100%; font-size:1.05rem; border-radius:var(--radius-pill); padding:0.8rem;">
+        <button type="submit" class="btn btn-soft-red btn-block">
           <i class="fas fa-lock me-2"></i> Login to Dashboard
         </button>
       </form>
@@ -66,7 +70,7 @@
 
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
-    <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:0.75rem;">
+    <div class="footer-logos">
       <img src="/images/nsslogo.jpg" alt="NSS Logo" class="footer-logo-img" style="border-radius:50%;">
       <img src="/images/pondilogo.png" alt="PU Logo" class="footer-logo-img">
       <img src="/images/40yearslogo.jpg" alt="40 Years Logo" class="footer-logo-img" style="border-radius:4px;">
@@ -78,7 +82,7 @@
     </div>
   </footer>
 
-  <script src="/js/main.js?v=1.1.0"></script>
+  <script src="/js/main.js?v=1.0.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const loginForm = document.getElementById('adminLoginForm');

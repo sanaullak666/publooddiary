@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14213D">
   <title>Request Blood Donor · PU Blood Diary</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/css/style.css?v=1.1.0">
+  <link rel="stylesheet" href="/css/style.css?v=2.0.0">
 </head>
 <body>
 
@@ -45,18 +46,19 @@
         </h1>
         <p class="card-subtitle">Select the required blood group to send an instant WhatsApp request directly to the Admin</p>
         
-        <div style="background:var(--primary-red-light); border-left:4px solid var(--primary-red); border-radius:8px; padding:0.85rem 1rem; margin-top:1.25rem; font-size:0.9rem; color:var(--text-color);">
-          <i class="fas fa-shield-alt text-primary-red me-2"></i> <strong>Donor Privacy Protected:</strong> Individual donor contact lists are kept confidential to prevent misuse. Choose your required blood group below to send an automated request to the Admin who will coordinate matching voluntary donors.
+        <div class="notice-banner">
+          <i class="fas fa-shield-alt"></i>
+          <div><strong>Donor Privacy Protected:</strong> Individual donor contact lists are kept confidential to prevent misuse. Choose your required blood group below to send an automated request to the Admin who will coordinate matching voluntary donors.</div>
         </div>
       </div>
 
       <!-- Blood Request Form -->
       <form id="bloodRequestForm" class="form-grid" style="margin-top:1.5rem;">
-        <div class="form-group" style="grid-column: 1 / -1;">
+        <div class="form-group full-width">
           <label class="form-label" for="reqBloodGroup" style="font-weight:700; font-size:1rem;">
             Select Required Blood Group <span class="text-primary-red">*</span>
           </label>
-          <select id="reqBloodGroup" class="form-select" style="font-size:1.05rem; padding:0.75rem 1rem;" required>
+          <select id="reqBloodGroup" class="form-select" required>
             <option value="">-- Choose Required Blood Group --</option>
             <option value="A+">A+</option>
             <option value="A-">A-</option>
@@ -85,20 +87,20 @@
       </form>
 
       <!-- Live WhatsApp Action Container -->
-      <div id="whatsappActionBox" class="glass-card" style="margin-top:1.5rem; padding:1.5rem; text-align:center; background:rgba(255,255,255,0.85); border:2px dashed var(--primary-red);">
-        <h3 style="font-size:1.2rem; font-weight:700; color:var(--primary-red); margin-bottom:0.5rem;">
-          <i class="fab fa-whatsapp me-2" style="color:#25D366;"></i> Send Blood Request to Admin via WhatsApp
+      <div id="whatsappActionBox" class="whatsapp-box">
+        <h3>
+          <i class="fab fa-whatsapp me-2"></i> Send Blood Request to Admin via WhatsApp
         </h3>
-        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1.25rem;" id="requestPreviewText">
+        <p id="requestPreviewText">
           Please select a blood group above to enable the WhatsApp request buttons.
         </p>
 
-        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-          <a id="btnWaAdmin1" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-soft-red disabled" style="flex:1; min-width:240px; justify-content:center; text-decoration:none; opacity:0.5; pointer-events:none; font-weight:700; padding:0.75rem 1.25rem;">
-            <i class="fab fa-whatsapp" style="font-size:1.3rem; color:#25D366; margin-right:6px;"></i> Send to Admin 1 (9188382205)
+        <div class="whatsapp-actions">
+          <a id="btnWaAdmin1" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-wa disabled" style="opacity:0.5; pointer-events:none;">
+            <i class="fab fa-whatsapp"></i> Send to Admin 1 (9188382205)
           </a>
-          <a id="btnWaAdmin2" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline-red disabled" style="flex:1; min-width:240px; justify-content:center; text-decoration:none; opacity:0.5; pointer-events:none; font-weight:700; padding:0.75rem 1.25rem;">
-            <i class="fab fa-whatsapp" style="font-size:1.3rem; color:#25D366; margin-right:6px;"></i> Send to Admin 2 (9444470765)
+          <a id="btnWaAdmin2" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-wa btn-wa-alt disabled" style="opacity:0.5; pointer-events:none;">
+            <i class="fab fa-whatsapp"></i> Send to Admin 2 (9444470765)
           </a>
         </div>
       </div>
@@ -107,7 +109,7 @@
 
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
-    <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:0.75rem;">
+    <div class="footer-logos">
       <img src="/images/nsslogo.jpg" alt="NSS Logo" class="footer-logo-img" style="border-radius:50%;">
       <img src="/images/pondilogo.png" alt="PU Logo" class="footer-logo-img">
       <img src="/images/40yearslogo.jpg" alt="40 Years Logo" class="footer-logo-img" style="border-radius:4px;">
@@ -119,7 +121,7 @@
     </div>
   </footer>
 
-  <script src="/js/main.js?v=1.1.0"></script>
-  <script src="/js/search.js?v=1.1.0"></script>
+  <script src="/js/main.js?v=1.0.2"></script>
+  <script src="/js/search.js?v=1.0.2"></script>
 </body>
 </html>
